@@ -1,598 +1,369 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CAMPUS 360 - Enterprise Smart Campus Suite</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: { extend: { colors: { brand: { 500: '#6366f1', 600: '#4f46e5' } } } }
-    }
-  </script>
-  <style>
-    .glass-card { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAMPUS 360 - Centralized Smart Campus Ecosystem</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-base: #060913;
+            --card-bg: rgba(18, 26, 47, 0.65);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-primary: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.35);
+            --danger: #f43f5e;
+            --danger-glow: rgba(244, 63, 94, 0.4);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body {
+            background: var(--bg-base);
+            background-image: 
+                radial-gradient(at 15% 15%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 85% 85%, rgba(244, 63, 94, 0.12) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* HEADER & NAV BAR */
+        header {
+            background: rgba(6, 9, 19, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 16px 30px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        .brand-logo {
+            font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px;
+            display: flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, #a5b4fc, #c084fc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        nav { display: flex; gap: 8px; flex-wrap: wrap; }
+        
+        nav button {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+            border: 1px solid var(--card-border);
+            padding: 9px 16px; border-radius: 12px;
+            cursor: pointer; font-size: 0.85rem; font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        nav button:hover, nav button.active {
+            background: var(--accent-primary);
+            color: #fff; border-color: var(--accent-primary);
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        nav button.sos-btn {
+            background: rgba(244, 63, 94, 0.15);
+            color: var(--danger);
+            border-color: rgba(244, 63, 94, 0.4);
+            animation: pulseGlow 2s infinite;
+        }
+
+        nav button.sos-btn:hover, nav button.sos-btn.active {
+            background: var(--danger); color: white;
+            box-shadow: 0 0 25px var(--danger-glow);
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(244, 63, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+        }
+
+        /* LAYOUT & CARDS */
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px; padding: 28px; margin-bottom: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: border-color 0.3s ease;
+        }
+
+        .card:hover { border-color: rgba(255, 255, 255, 0.15); }
+
+        h2 { font-size: 1.35rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #fff; }
+
+        /* FORM CONTROLS */
+        label { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 14px; display: block; }
+        
+        input, textarea, select {
+            width: 100%; padding: 13px 16px; margin-top: 6px;
+            border-radius: 12px; border: 1px solid var(--card-border);
+            background: rgba(5, 8, 18, 0.6); color: #fff;
+            font-size: 0.95rem; font-weight: 500; outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        /* BUTTONS */
+        .btn {
+            background: linear-gradient(135deg, var(--accent-primary), #4f46e5);
+            color: white; border: none; padding: 14px 22px;
+            border-radius: 12px; font-weight: 700; font-size: 0.95rem;
+            cursor: pointer; width: 100%; margin-top: 18px;
+            display: inline-flex; justify-content: center; align-items: center; gap: 8px;
+            box-shadow: 0 4px 15px var(--accent-glow); transition: all 0.25s ease;
+        }
+
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .btn-danger { background: var(--danger); box-shadow: 0 4px 15px var(--danger-glow); width: auto; padding: 8px 14px; font-size: 0.85rem; }
+        .btn-success { background: var(--success); width: auto; padding: 8px 14px; font-size: 0.85rem; }
+
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* DASHBOARD DATA LISTS */
+        .data-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            padding: 18px; border-radius: 14px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .badge {
+            padding: 6px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .badge-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-approved { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-rejected { background: rgba(244, 63, 94, 0.15); color: #f87171; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+        .ticket-box {
+            background: rgba(99, 102, 241, 0.1); border: 1px dashed var(--accent-primary);
+            padding: 20px; border-radius: 14px; margin-top: 20px; text-align: center;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    </style>
 </head>
-<body class="bg-[#030712] text-slate-100 font-sans antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<body>
 
-  <!-- Mobile Header -->
-  <div class="md:hidden flex items-center justify-between bg-slate-900/90 backdrop-blur-md px-4 py-3.5 border-b border-slate-800 w-full fixed top-0 left-0 z-50">
-    <div class="flex items-center space-x-2.5">
-      <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/30">
-        <i class="fa-solid fa-cube text-white text-sm"></i>
-      </div>
-      <span class="font-black text-lg tracking-wider bg-gradient-to-r from-indigo-400 to-white bg-clip-text text-transparent">CAMPUS 360</span>
-    </div>
-    <button id="menu-btn" class="text-slate-300 focus:outline-none text-2xl"><i class="fa-solid fa-bars-staggered"></i></button>
-  </div>
+    <audio id="sosAlarmAudio" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
 
-  <!-- Sidebar Navigation -->
-  <aside id="sidebar" class="bg-slate-950/95 md:bg-slate-900/50 backdrop-blur-xl border-r border-slate-800/80 w-72 fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 flex flex-col justify-between pt-16 md:pt-0 shadow-2xl">
-    <div>
-      <div class="hidden md:flex items-center space-x-3 px-6 py-7 border-b border-slate-800/60">
-        <div class="p-2.5 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl shadow-lg shadow-indigo-600/40">
-          <i class="fa-solid fa-cube text-white text-xl"></i>
+    <header>
+        <div class="brand-logo">
+            <i class="fa-solid fa-graduation-cap"></i> CAMPUS 360
         </div>
-        <div>
-          <span class="font-black text-xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent block">CAMPUS 360</span>
-          <span class="text-[10px] text-indigo-400 font-semibold uppercase tracking-widest">Enterprise Edition</span>
-        </div>
-      </div>
-      <nav class="px-3 py-6 space-y-1.5">
-        <button onclick="switchTab('home')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl nav-link bg-indigo-600 text-white font-semibold shadow-lg shadow-indigo-600/25 transition-all text-sm" data-target="home"><i class="fa-solid fa-house w-5"></i><span>Home Portal</span></button>
-        <button onclick="switchTab('grievance')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl nav-link text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all text-sm font-medium" data-target="grievance"><i class="fa-solid fa-bullhorn w-5 text-amber-400"></i><span>Grievance Desk</span></button>
-        <button onclick="switchTab('sos')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl nav-link text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all text-sm font-medium" data-target="sos"><i class="fa-solid fa-shield-halved w-5 text-rose-500"></i><span>SOS / Anti-Ragging</span></button>
-        <button onclick="switchTab('outpass')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl nav-link text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all text-sm font-medium" data-target="outpass"><i class="fa-solid fa-id-card w-5 text-sky-400"></i><span>Out-Pass Portal</span></button>
-        <button onclick="switchTab('lostfound')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl nav-link text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all text-sm font-medium" data-target="lostfound"><i class="fa-solid fa-magnifying-glass w-5 text-emerald-400"></i><span>Lost & Found</span></button>
-        <button onclick="switchTab('parent')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl nav-link text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all text-sm font-medium" data-target="parent"><i class="fa-solid fa-users w-5 text-purple-400"></i><span>Parent Portal</span></button>
-        <button onclick="switchTab('admin')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl nav-link text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all text-sm font-medium" data-target="admin"><i class="fa-solid fa-lock w-5 text-amber-500"></i><span>Admin Console</span></button>
-      </nav>
-    </div>
-    <div class="px-6 py-5 border-t border-slate-800/60 text-xs text-slate-500 flex items-center justify-between">
-      <span>Secure Cloud Active</span><span class="w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50 animate-pulse"></span>
-    </div>
-  </aside>
+        <nav>
+            <button onclick="switchTab('home')" id="nav-home" class="active"><i class="fa-solid fa-house"></i> Home</button>
+            <button onclick="switchTab('grievance')" id="nav-grievance"><i class="fa-solid fa-bullhorn"></i> Grievance</button>
+            <button onclick="switchTab('sos')" id="nav-sos" class="sos-btn"><i class="fa-solid fa-shield-cat"></i> SOS</button>
+            <button onclick="switchTab('outpass')" id="nav-outpass"><i class="fa-solid fa-ticket"></i> Out-Pass</button>
+            <button onclick="switchTab('lostfound')" id="nav-lostfound"><i class="fa-solid fa-magnifying-glass"></i> Lost & Found</button>
+            <button onclick="switchTab('parent')" id="nav-parent"><i class="fa-solid fa-user-group"></i> Parent</button>
+            <button onclick="switchTab('admin')" id="nav-admin"><i class="fa-solid fa-lock"></i> Admin</button>
+        </nav>
+    </header>
 
-  <!-- Main View -->
-  <main class="flex-1 flex flex-col mt-16 md:mt-0 p-4 md:p-10 overflow-y-auto">
-    <div class="max-w-4xl mx-auto w-full space-y-6">
-      
-      <!-- 1. HOME PORTAL -->
-      <section id="sec-home" class="tab-section space-y-8">
-        <div class="glass-card rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
-          <div class="absolute -right-10 -top-10 w-60 h-60 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-indigo-400 text-xs font-semibold mb-6">
-            <i class="fa-solid fa-shield-check"></i><span>Verified Enterprise Platform</span>
-          </div>
-          <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-4 bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">CAMPUS 360</h1>
-          <p class="text-slate-400 text-base md:text-lg max-w-2xl leading-relaxed mb-8">
-            Complete centralized digital ecosystem for institutional grievance tracking, emergency response protocols, automated out-pass workflows, and real-time attendance monitoring.
-          </p>
-          <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-6 max-w-sm backdrop-blur-md">
-            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center justify-between">
-              <span>Platform Satisfaction</span><span id="avg-rating" class="text-indigo-400 text-sm">4.9 / 5.0</span>
-            </h3>
-            <div class="flex space-x-2 mb-3">
-              <i class="fa-solid fa-star text-amber-400 cursor-pointer hover:scale-125 transition" onclick="ratePortal(1)"></i>
-              <i class="fa-solid fa-star text-amber-400 cursor-pointer hover:scale-125 transition" onclick="ratePortal(2)"></i>
-              <i class="fa-solid fa-star text-amber-400 cursor-pointer hover:scale-125 transition" onclick="ratePortal(3)"></i>
-              <i class="fa-solid fa-star text-amber-400 cursor-pointer hover:scale-125 transition" onclick="ratePortal(4)"></i>
-              <i class="fa-solid fa-star text-amber-400 cursor-pointer hover:scale-125 transition" onclick="ratePortal(5)"></i>
-            </div>
-            <p id="rating-msg" class="text-xs text-emerald-400 font-medium"></p>
-          </div>
-        </div>
-      </section>
+    <div class="container">
 
-      <!-- 2. GRIEVANCE PORTAL (With Live Inline Status Tracker) -->
-      <section id="sec-grievance" class="tab-section hidden space-y-6">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex items-center justify-between mb-6 border-b border-slate-800/80 pb-4">
-            <div>
-              <h2 class="text-xl font-bold flex items-center space-x-3"><i class="fa-solid fa-bullhorn text-amber-400"></i><span>Student Grievance Desk</span></h2>
-              <p class="text-xs text-slate-400 mt-0.5">Submit complaints and instantly track their resolution status below.</p>
-            </div>
-          </div>
-          
-          <form id="grievance-form" onsubmit="submitGrievance(event)" class="space-y-4 mb-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Student Name & Roll No</label><input type="text" id="g-name" required placeholder="Aman Verma (2201CSE04)" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none"></div>
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Location / Room Number</label><input type="text" id="g-location" required placeholder="LH-204 / Hostel Block A" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none"></div>
-            </div>
-            <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Issue Description</label><textarea id="g-desc" rows="3" required placeholder="Provide clear details regarding the issue..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none"></textarea></div>
-            <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm rounded-xl shadow-lg shadow-indigo-600/30 transition">Submit Grievance</button>
-          </form>
-
-          <!-- INLINE LIVE STATUS TRACKER BOX -->
-          <div class="border-t border-slate-800/80 pt-6">
-            <h3 class="text-sm font-bold text-slate-200 mb-3 flex items-center space-x-2">
-              <i class="fa-solid fa-bolt text-amber-400"></i><span>Live Ticket Tracker & Recent Submissions</span>
-            </h3>
-            <div id="inline-grievance-tracker" class="space-y-3">
-              <p class="text-slate-500 text-xs">No active grievance tickets found in your session.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 3. SOS PORTAL -->
-      <section id="sec-sos" class="tab-section hidden space-y-6">
-        <div class="bg-gradient-to-br from-rose-950/30 via-slate-900 to-slate-900 border border-rose-900/50 rounded-3xl p-8 text-center shadow-2xl">
-          <div class="w-20 h-20 bg-rose-600/20 border border-rose-500/30 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-            <i class="fa-solid fa-triangle-exclamation text-rose-500 text-3xl"></i>
-          </div>
-          <h2 class="text-3xl font-black text-rose-400 mb-2">Emergency SOS & Anti-Ragging Console</h2>
-          <p class="text-slate-400 text-sm max-w-md mx-auto mb-8">Instant high-priority distress beacon transmitting your live coordinates to campus security authorities.</p>
-          <div class="max-w-md mx-auto mb-8 space-y-3 text-left">
-            <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Your Name & Roll No</label><input type="text" id="sos-student" placeholder="Optional" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white text-center focus:border-rose-500 focus:outline-none"></div>
-            <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Current Location / Block</label><input type="text" id="sos-loc" placeholder="e.g. Mechanical Workshop Gate 2" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white text-center focus:border-rose-500 focus:outline-none"></div>
-          </div>
-          <button onclick="triggerSOSAlert()" class="px-10 py-4 bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-base rounded-2xl shadow-xl shadow-rose-600/40 transition transform active:scale-95">
-            <i class="fa-solid fa-tower-broadcast mr-2"></i> TRANSMIT EMERGENCY SOS
-          </button>
-        </div>
-      </section>
-
-      <!-- 4. OUT-PASS PORTAL (With Live Inline Status Tracker & Download Pass) -->
-      <section id="sec-outpass" class="tab-section hidden space-y-6">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex items-center justify-between mb-6 border-b border-slate-800/80 pb-4">
-            <div>
-              <h2 class="text-xl font-bold flex items-center space-x-3"><i class="fa-solid fa-id-card text-sky-400"></i><span>Student Out-Pass System</span></h2>
-              <p class="text-xs text-slate-400 mt-0.5">Request gate passes and download verified digital gate passes directly below.</p>
-            </div>
-          </div>
-
-          <form id="outpass-form" onsubmit="submitOutpass(event)" class="space-y-4 mb-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Student Full Name</label><input type="text" id="op-name" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></div>
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Roll Number</label><input type="text" id="op-roll" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></div>
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Student Phone No</label><input type="text" id="op-phone" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></div>
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Parent Phone No</label><input type="text" id="op-parentphone" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></div>
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Destination / Place</label><input type="text" id="op-place" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></div>
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Reason for Leave</label><input type="text" id="op-reason" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></div>
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Out Date & Time</label><input type="datetime-local" id="op-outdate" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></div>
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Return Date & Time</label><input type="datetime-local" id="op-returndate" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></div>
-            </div>
-            <button type="submit" class="px-6 py-3 bg-sky-600 hover:bg-sky-500 text-white font-semibold text-sm rounded-xl shadow-lg shadow-sky-600/30 transition">Request Out-Pass</button>
-          </form>
-
-          <!-- INLINE LIVE OUTPASS TRACKER & DOWNLOAD PASS BOX -->
-          <div class="border-t border-slate-800/80 pt-6">
-            <h3 class="text-sm font-bold text-slate-200 mb-3 flex items-center space-x-2">
-              <i class="fa-solid fa-bolt text-sky-400"></i><span>Live Out-Pass Status & Download Passes</span>
-            </h3>
-            <div id="inline-outpass-tracker" class="space-y-3">
-              <p class="text-slate-500 text-xs">No active out-pass requests found in your session.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 5. LOST & FOUND PORTAL -->
-      <section id="sec-lostfound" class="tab-section hidden space-y-6">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <h2 class="text-xl font-bold flex items-center space-x-3 mb-6"><i class="fa-solid fa-magnifying-glass text-emerald-400"></i><span>Campus Lost & Found Register</span></h2>
-          <form id="lf-form" onsubmit="submitLostFound(event)" class="space-y-4 mb-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Listing Category</label>
-                <select id="lf-type" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
-                  <option value="Lost">Lost Item</option>
-                  <option value="Found">Found Item</option>
-                </select>
-              </div>
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Item Title</label><input type="text" id="lf-title" required placeholder="e.g. Scientific Calculator" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></div>
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Location</label><input type="text" id="lf-loc" required placeholder="e.g. Central Library 2nd Floor" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></div>
-              <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Contact Details</label><input type="text" id="lf-contact" required placeholder="Phone / Email" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></div>
-            </div>
-            <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Detailed Description</label><textarea id="lf-desc" rows="2" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"></textarea></div>
-            <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-xl shadow-lg shadow-emerald-600/30 transition">Publish Listing</button>
-          </form>
-          <h3 class="text-sm font-bold text-slate-200 mb-3">Approved Campus Listings</h3>
-          <div id="lf-items-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <p class="text-slate-500 text-xs">Loading approved listings...</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 6. PARENT PORTAL -->
-      <section id="sec-parent" class="tab-section hidden space-y-6">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <h2 class="text-xl font-bold flex items-center space-x-3 mb-6"><i class="fa-solid fa-users text-purple-400"></i><span>Parent Attendance Monitoring Portal</span></h2>
-          <div class="flex gap-3 mb-6">
-            <input type="text" id="parent-roll-input" placeholder="Enter Student Roll Number (e.g. 2201CSE04)" class="flex-1 bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
-            <button onclick="checkParentAttendance()" class="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm rounded-xl transition">Check Status</button>
-          </div>
-          <div id="parent-result-box" class="bg-slate-950/90 border border-slate-800 rounded-2xl p-6 hidden">
-            <h3 class="text-base font-bold text-indigo-300 mb-3" id="p-res-name">Student Record</h3>
-            <div class="grid grid-cols-2 gap-4 text-sm">
-              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800"><span class="text-xs text-slate-400 block mb-1">Today's Status</span><span id="p-res-status" class="text-lg font-extrabold">--</span></div>
-              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800"><span class="text-xs text-slate-400 block mb-1">Overall Attendance</span><span id="p-res-percent" class="text-lg font-extrabold text-emerald-400">--</span></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 7. ADMIN MASTER CONTROL PANEL (Password Ujjwal123) -->
-      <section id="sec-admin" class="tab-section hidden space-y-6">
-        <!-- Admin Login Screen -->
-        <div id="admin-login-card" class="glass-card rounded-3xl p-8 max-w-sm mx-auto shadow-2xl text-center">
-          <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <i class="fa-solid fa-lock text-amber-400 text-xl"></i>
-          </div>
-          <h2 class="text-xl font-bold text-white mb-1">Admin Master Console</h2>
-          <p class="text-slate-400 text-xs mb-6">Enter master authorization password.</p>
-          <input type="password" id="admin-pass-input" placeholder="Password (Ujjwal123)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white text-center mb-4 focus:border-amber-500 focus:outline-none">
-          <button onclick="verifyAdminPassword()" class="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-amber-600/30 transition">Authenticate</button>
-        </div>
-
-        <!-- Admin Dashboard Content -->
-        <div id="admin-dashboard" class="hidden space-y-6">
-          <div class="flex items-center justify-between border-b border-slate-800/80 pb-4">
-            <h2 class="text-xl font-bold flex items-center space-x-3 text-amber-400"><i class="fa-solid fa-shield-cat"></i><span>Admin Control Master Suite</span></h2>
-            <button onclick="lockAdminPanel()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-xl text-slate-300 font-semibold">Lock Console</button>
-          </div>
-
-          <!-- SECTION 1: Student Attendance Management -->
-          <div class="glass-card rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 class="text-sm font-bold text-indigo-400 border-b border-slate-800/60 pb-2.5 flex items-center space-x-2"><i class="fa-solid fa-users-gear"></i><span>1. Student Attendance Management</span></h3>
-            <form id="admin-student-form" onsubmit="addStudentData(event)" class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <input type="text" id="as-name" placeholder="Student Name" required class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
-              <input type="text" id="as-roll" placeholder="Roll Number" required class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
-              <input type="text" id="as-branch" placeholder="Branch & Class" required class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
-              <select id="as-status" class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
-                <option value="Present">Present Today</option>
-                <option value="Absent">Absent Today</option>
-              </select>
-              <input type="text" id="as-percent" placeholder="Attendance % (e.g. 85%)" required class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
-              <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl py-2.5 text-xs transition">Save Record</button>
-            </form>
-            <div id="admin-students-list" class="space-y-2 pt-2"><p class="text-slate-500 text-xs">No records available.</p></div>
-          </div>
-
-          <!-- SECTION 2: Grievance Section -->
-          <div class="glass-card rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 class="text-sm font-bold text-amber-400 border-b border-slate-800/60 pb-2.5 flex items-center space-x-2"><i class="fa-solid fa-bullhorn"></i><span>2. Grievance Management Section</span></h3>
-            <div id="admin-grievance-list" class="space-y-2"><p class="text-slate-500 text-xs">Loading grievances...</p></div>
-          </div>
-
-          <!-- SECTION 3: SOS Anti-Ragging Section -->
-          <div class="glass-card rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 class="text-sm font-bold text-rose-400 border-b border-slate-800/60 pb-2.5 flex items-center space-x-2"><i class="fa-solid fa-triangle-exclamation"></i><span>3. Live Emergency SOS / Anti-Ragging Section</span></h3>
-            <div id="admin-sos-list" class="space-y-2"><p class="text-slate-500 text-xs">No active emergency signals.</p></div>
-          </div>
-
-          <!-- SECTION 4: Out-Pass Section -->
-          <div class="glass-card rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 class="text-sm font-bold text-sky-400 border-b border-slate-800/60 pb-2.5 flex items-center space-x-2"><i class="fa-solid fa-id-card"></i><span>4. Out-Pass Approvals Section</span></h3>
-            <div id="admin-outpass-list" class="space-y-2"><p class="text-slate-500 text-xs">Loading out-pass requests...</p></div>
-          </div>
-
-          <!-- SECTION 5: Lost & Found Section -->
-          <div class="glass-card rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 class="text-sm font-bold text-emerald-400 border-b border-slate-800/60 pb-2.5 flex items-center space-x-2"><i class="fa-solid fa-magnifying-glass"></i><span>5. Lost & Found Approval Section</span></h3>
-            <div id="admin-lf-list" class="space-y-2"><p class="text-slate-500 text-xs">Loading listings...</p></div>
-          </div>
-
-        </div>
-      </section>
-
-    </div>
-  </main>
-
-  <audio id="sos-siren" src="https://assets.mixkit.co/active_storage/sermons/504/504-preview.mp3" preload="auto" loop></audio>
-
-  <script>
-    const firebaseConfig = { databaseURL: "https://campus-360-9cda6-default-rtdb.firebaseio.com" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    // Local session ticket memory for inline tracking
-    let myTickets = JSON.parse(localStorage.getItem('campus360_my_tickets') || '[]');
-
-    document.getElementById('menu-btn').addEventListener('click', () => {
-      document.getElementById('sidebar').classList.toggle('-translate-x-full');
-    });
-
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
-      document.getElementById('sec-' + tabId).classList.remove('hidden');
-      document.querySelectorAll('.nav-link').forEach(btn => {
-        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-600/25');
-        btn.classList.add('text-slate-400');
-      });
-      const activeBtn = document.querySelector(`[data-target="${tabId}"]`);
-      if(activeBtn) {
-        activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-600/25');
-        activeBtn.classList.remove('text-slate-400');
-      }
-      if(window.innerWidth < 768) document.getElementById('sidebar').classList.add('-translate-x-full');
-    }
-
-    window.addEventListener('load', () => {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance("Welcome to Campus 360"));
-      }
-      listenFirebaseData();
-      renderInlineTrackers();
-    });
-
-    function ratePortal(stars) {
-      document.getElementById('rating-msg').innerText = `Thank you for rating us ${stars} Stars!`;
-      document.getElementById('avg-rating').innerText = "4.9 / 5.0";
-    }
-
-    // Submit Grievance
-    function submitGrievance(e) {
-      e.preventDefault();
-      const ticketId = 'GRV-' + Math.floor(100000 + Math.random() * 900000);
-      const data = {
-        ticketId, type: 'Grievance',
-        name: document.getElementById('g-name').value,
-        location: document.getElementById('g-location').value,
-        description: document.getElementById('g-desc').value,
-        status: 'Pending Review',
-        timestamp: new Date().toLocaleString()
-      };
-      db.ref('grievances/' + ticketId).set(data);
-      myTickets.unshift({ id: ticketId, type: 'Grievance', title: data.name + ' - ' + data.location });
-      localStorage.setItem('campus360_my_tickets', JSON.stringify(myTickets));
-      document.getElementById('grievance-form').reset();
-      renderInlineTrackers();
-      alert("Grievance submitted successfully! Track status instantly in the section below.");
-    }
-
-    // SOS Trigger
-    function triggerSOSAlert() {
-      const sosId = 'SOS-' + Math.floor(1000 + Math.random() * 9000);
-      const data = {
-        sosId,
-        student: document.getElementById('sos-student').value || 'Anonymous Student',
-        location: document.getElementById('sos-loc').value || 'Main Campus',
-        timestamp: new Date().toLocaleString()
-      };
-      db.ref('sos_alerts/' + sosId).set(data);
-      alert("SOS Emergency Signal Dispatched to Admin Console!");
-    }
-
-    // Submit Outpass
-    function submitOutpass(e) {
-      e.preventDefault();
-      const ticketId = 'OUT-' + Math.floor(100000 + Math.random() * 900000);
-      const data = {
-        ticketId, type: 'Outpass',
-        name: document.getElementById('op-name').value,
-        roll: document.getElementById('op-roll').value,
-        phone: document.getElementById('op-phone').value,
-        parentphone: document.getElementById('op-parentphone').value,
-        place: document.getElementById('op-place').value,
-        reason: document.getElementById('op-reason').value,
-        outdate: document.getElementById('op-outdate').value,
-        returndate: document.getElementById('op-returndate').value,
-        status: 'Pending Approval'
-      };
-      db.ref('outpasses/' + ticketId).set(data);
-      myTickets.unshift({ id: ticketId, type: 'Outpass', title: data.name + ' to ' + data.place });
-      localStorage.setItem('campus360_my_tickets', JSON.stringify(myTickets));
-      document.getElementById('outpass-form').reset();
-      renderInlineTrackers();
-      alert("Out-Pass requested successfully! Track status & download pass instantly below.");
-    }
-
-    // Lost & Found Submit
-    function submitLostFound(e) {
-      e.preventDefault();
-      const itemId = 'LF-' + Math.floor(100000 + Math.random() * 900000);
-      const data = {
-        itemId,
-        type: document.getElementById('lf-type').value,
-        title: document.getElementById('lf-title').value,
-        location: document.getElementById('lf-loc').value,
-        contact: document.getElementById('lf-contact').value,
-        description: document.getElementById('lf-desc').value,
-        status: 'Unapproved'
-      };
-      db.ref('lostfound/' + itemId).set(data);
-      alert("Listing submitted successfully! Awaiting admin publishing.");
-      document.getElementById('lf-form').reset();
-    }
-
-    // Parent Attendance Lookup
-    function checkParentAttendance() {
-      const roll = document.getElementById('parent-roll-input').value.trim();
-      if(!roll) return alert("Please enter roll number");
-      db.ref('students/' + roll).once('value', snapshot => {
-        const val = snapshot.val();
-        document.getElementById('parent-result-box').classList.remove('hidden');
-        if(val) {
-          document.getElementById('p-res-name').innerText = `${val.name} (${val.branch})`;
-          document.getElementById('p-res-status').innerText = val.status;
-          document.getElementById('p-res-status').className = val.status === 'Present' ? 'text-lg font-extrabold text-emerald-400' : 'text-lg font-extrabold text-rose-500';
-          document.getElementById('p-res-percent').innerText = val.percent;
-        } else {
-          document.getElementById('p-res-name').innerText = "Student record not found.";
-          document.getElementById('p-res-status').innerText = "--";
-          document.getElementById('p-res-percent').innerText = "--";
-        }
-      });
-    }
-
-    // Render Inline Trackers for Grievances and Outpasses automatically
-    function renderInlineTrackers() {
-      const gBox = document.getElementById('inline-grievance-tracker');
-      const opBox = document.getElementById('inline-outpass-tracker');
-      
-      const gTickets = myTickets.filter(t => t.id.startsWith('GRV'));
-      const opTickets = myTickets.filter(t => t.id.startsWith('OUT'));
-
-      if(gBox) {
-        if(gTickets.length === 0) {
-          gBox.innerHTML = '<p class="text-slate-500 text-xs">No active grievance tickets submitted in this session.</p>';
-        } else {
-          gBox.innerHTML = '';
-          gTickets.forEach(t => {
-            db.ref('grievances/' + t.id).on('value', snap => {
-              const val = snap.val();
-              const status = val ? val.status : 'Deleted/Resolved';
-              gBox.innerHTML += `<div class="bg-slate-950 border border-slate-800/80 p-3.5 rounded-xl flex items-center justify-between text-xs">
-                <div><span class="font-mono font-bold text-amber-400">${t.id}</span> - <span class="text-slate-300">${t.title}</span></div>
-                <span class="px-2.5 py-1 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">${status}</span>
-              </div>`;
-            });
-          });
-        }
-      }
-
-      if(opBox) {
-        if(opTickets.length === 0) {
-          opBox.innerHTML = '<p class="text-slate-500 text-xs">No active out-pass requests submitted in this session.</p>';
-        } else {
-          opBox.innerHTML = '';
-          opTickets.forEach(t => {
-            db.ref('outpasses/' + t.id).on('value', snap => {
-              const val = snap.val();
-              const status = val ? val.status : 'Processed';
-              const isAppr = status === 'Approved';
-              opBox.innerHTML += `<div class="bg-slate-950 border border-slate-800/80 p-3.5 rounded-xl flex items-center justify-between text-xs">
-                <div><span class="font-mono font-bold text-sky-400">${t.id}</span> - <span class="text-slate-300">${t.title}</span></div>
-                <div class="flex items-center space-x-2">
-                  <span class="px-2.5 py-1 rounded-full font-bold ${isAppr ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">${status}</span>
-                  ${isAppr ? `<button onclick="alert('Downloading Official Verified Gate Out-Pass PDF for ${t.id}...') " class="px-3 py-1 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg"><i class="fa-solid fa-download mr-1"></i>Download Pass</button>` : ''}
+        <!-- 1. HOME PORTAL -->
+        <section id="view-home" class="section active">
+            <div class="card" style="text-align: center; padding: 50px 20px; background: radial-gradient(circle at center, rgba(99,102,241,0.15) 0%, rgba(18,26,47,0.65) 100%);">
+                <h1 style="font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; background: linear-gradient(to right, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Centralized Smart Campus Portal</h1>
+                <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto 30px; line-height: 1.6;">Unified Realtime platform for Student Grievances, Emergency Anti-Ragging Assistance, Gate Passes, Lost & Found Registry, and Parent Attendance Monitoring.</p>
+                
+                <div class="grid-3" style="max-width: 700px; margin: 0 auto;">
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); padding: 22px; border-radius: 16px;">
+                        <h3 id="avg-rating" style="font-size: 1.8rem; color: #fbbf24;">4.8 ★</h3>
+                        <small style="color: var(--text-muted);">Platform Rating</small>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); padding: 22px; border-radius: 16px;">
+                        <h3 id="total-reviews" style="font-size: 1.8rem; color: #818cf8;">0</h3>
+                        <small style="color: var(--text-muted);">Verified Reviews</small>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); padding: 22px; border-radius: 16px;">
+                        <h3 style="font-size: 1.8rem; color: #34d399;">24/7</h3>
+                        <small style="color: var(--text-muted);">Admin Monitoring</small>
+                    </div>
                 </div>
-              </div>`;
-            });
-          });
-        }
-      }
-    }
-
-    // Admin Authentication
-    function verifyAdminPassword() {
-      if(document.getElementById('admin-pass-input').value === 'Ujjwal123') {
-        document.getElementById('admin-login-card').classList.add('hidden');
-        document.getElementById('admin-dashboard').classList.remove('hidden');
-      } else {
-        alert("Incorrect Password! Use Ujjwal123");
-      }
-    }
-    function lockAdminPanel() {
-      document.getElementById('admin-dashboard').classList.add('hidden');
-      document.getElementById('admin-login-card').classList.remove('hidden');
-      document.getElementById('admin-pass-input').value = '';
-    }
-
-    function addStudentData(e) {
-      e.preventDefault();
-      const roll = document.getElementById('as-roll').value;
-      db.ref('students/' + roll).set({
-        name: document.getElementById('as-name').value,
-        roll,
-        branch: document.getElementById('as-branch').value,
-        status: document.getElementById('as-status').value,
-        percent: document.getElementById('as-percent').value
-      });
-      alert("Attendance record saved!");
-      document.getElementById('admin-student-form').reset();
-    }
-
-    function deleteRecord(path, id) {
-      if(confirm("Delete this record permanently?")) db.ref(path + '/' + id).remove();
-    }
-    function approveOutpass(id) { db.ref('outpasses/' + id).update({ status: 'Approved' }); }
-    function approveLostFound(id) { db.ref('lostfound/' + id).update({ status: 'Approved' }); }
-
-    // Firebase Listeners for Admin Console
-    function listenFirebaseData() {
-      db.ref('students').on('value', snap => {
-        const data = snap.val();
-        const list = document.getElementById('admin-students-list');
-        list.innerHTML = data ? '' : '<p class="text-slate-500 text-xs">No records available.</p>';
-        if(data) Object.values(data).forEach(s => {
-          list.innerHTML += `<div class="bg-slate-950 border border-slate-800/80 p-3 rounded-xl flex items-center justify-between text-xs">
-            <div><span class="font-bold text-white">${s.name}</span> (${s.roll}) - Status: <span class="${s.status==='Present'?'text-emerald-400':'text-rose-400'}">${s.status}</span> (${s.percent})</div>
-            <button onclick="deleteRecord('students', '${s.roll}')" class="px-2.5 py-1 bg-rose-600/80 text-white rounded-lg font-semibold">Delete</button>
-          </div>`;
-        });
-      });
-
-      db.ref('sos_alerts').on('value', snap => {
-        const data = snap.val();
-        const list = document.getElementById('admin-sos-list');
-        const siren = document.getElementById('sos-siren');
-        list.innerHTML = data ? '' : '<p class="text-slate-500 text-xs">No active emergency signals.</p>';
-        if(data) {
-          siren.play().catch(e => {});
-          Object.values(data).forEach(i => {
-            list.innerHTML += `<div class="bg-rose-950/40 border border-rose-900/60 p-3 rounded-xl flex items-center justify-between text-xs">
-              <div><p class="font-bold text-rose-300">🚨 SOS: ${i.student}</p><p class="text-slate-400">Location: ${i.location} | Time: ${i.timestamp}</p></div>
-              <button onclick="deleteRecord('sos_alerts', '${i.sosId}')" class="px-2.5 py-1 bg-rose-600 text-white rounded-lg font-bold">Resolve</button>
-            </div>`;
-          });
-        } else { siren.pause(); }
-      });
-
-      db.ref('grievances').on('value', snap => {
-        const data = snap.val();
-        const list = document.getElementById('admin-grievance-list');
-        list.innerHTML = data ? '' : '<p class="text-slate-500 text-xs">No grievances.</p>';
-        if(data) Object.values(data).forEach(i => {
-          list.innerHTML += `<div class="bg-slate-950 border border-slate-800/80 p-3 rounded-xl flex items-center justify-between text-xs">
-            <div><p class="font-semibold text-amber-300">[${i.ticketId}] ${i.name} - ${i.location}</p><p class="text-slate-400 mt-0.5">${i.description}</p></div>
-            <button onclick="deleteRecord('grievances', '${i.ticketId}')" class="px-2.5 py-1 bg-rose-600/80 text-white rounded-lg font-semibold">Delete</button>
-          </div>`;
-        });
-      });
-
-      db.ref('outpasses').on('value', snap => {
-        const data = snap.val();
-        const list = document.getElementById('admin-outpass-list');
-        list.innerHTML = data ? '' : '<p class="text-slate-500 text-xs">No out-pass requests.</p>';
-        if(data) Object.values(data).forEach(i => {
-          const isAppr = i.status === 'Approved';
-          list.innerHTML += `<div class="bg-slate-950 border border-slate-800/80 p-3 rounded-xl flex items-center justify-between text-xs">
-            <div><p class="font-semibold text-sky-300">[${i.ticketId}] ${i.name} (${i.roll}) to ${i.place}</p><p class="text-slate-400">Status: <span class="${isAppr?'text-emerald-400 font-bold':'text-amber-400'}">${i.status}</span></p></div>
-            <div class="flex space-x-2">
-              ${!isAppr ? `<button onclick="approveOutpass('${i.ticketId}')" class="px-2.5 py-1 bg-emerald-600 text-white rounded-lg font-semibold">Approve</button>` : ''}
-              <button onclick="deleteRecord('outpasses', '${i.ticketId}')" class="px-2.5 py-1 bg-rose-600/80 text-white rounded-lg font-semibold">Delete</button>
             </div>
-          </div>`;
-        });
-      });
 
-      db.ref('lostfound').on('value', snap => {
-        const data = snap.val();
-        const adminList = document.getElementById('admin-lf-list');
-        const studentList = document.getElementById('lf-items-list');
-        adminList.innerHTML = data ? '' : '<p class="text-slate-500 text-xs">No listings.</p>';
-        studentList.innerHTML = data ? '' : '<p class="text-slate-500 text-xs">No approved listings.</p>';
-        if(data) Object.values(data).forEach(i => {
-          const isAppr = i.status === 'Approved';
-          adminList.innerHTML += `<div class="bg-slate-950 border border-slate-800/80 p-3 rounded-xl flex items-center justify-between text-xs">
-            <div><p class="font-semibold text-emerald-300">[${i.type}] ${i.title} at ${i.location}</p><p class="text-slate-400">Contact: ${i.contact} | Status: <span class="${isAppr?'text-emerald-400':'text-amber-400'}">${i.status}</span></p></div>
-            <div class="flex space-x-2">
-              ${!isAppr ? `<button onclick="approveLostFound('${i.itemId}')" class="px-2.5 py-1 bg-emerald-600 text-white rounded-lg font-semibold">Approve</button>` : ''}
-              <button onclick="deleteRecord('lostfound', '${i.itemId}')" class="px-2.5 py-1 bg-rose-600/80 text-white rounded-lg font-semibold">Delete</button>
+            <div class="card">
+                <h2><i class="fa-solid fa-star" style="color: #fbbf24;"></i> Rate & Review Platform</h2>
+                <label>Your Rating</label>
+                <select id="user-rating-val">
+                    <option value="5">⭐⭐⭐⭐⭐ (5/5) Excellent</option>
+                    <option value="4">⭐⭐⭐⭐ (4/5) Very Good</option>
+                    <option value="3">⭐⭐⭐ (3/5) Average</option>
+                    <option value="2">⭐⭐ (2/5) Needs Improvement</option>
+                    <option value="1">⭐ (1/5) Poor</option>
+                </select>
+                <label>Feedback & Suggestions</label>
+                <textarea id="user-review-text" rows="3" placeholder="Write your review here..."></textarea>
+                <button onclick="submitRating()" class="btn"><i class="fa-solid fa-paper-plane"></i> Submit Feedback</button>
             </div>
-          </div>`;
+        </section>
 
-          if(isAppr) {
-            studentList.innerHTML += `<div class="bg-slate-950 border border-slate-800/80 p-4 rounded-xl text-xs">
-              <span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded font-bold">${i.type}</span>
-              <h4 class="font-bold text-white text-sm mt-1">${i.title}</h4>
-              <p class="text-slate-400 mt-1">Location: ${i.location}</p>
-              <p class="text-slate-300 mt-2">${i.description}</p>
-              <button onclick="alert('Claim logged! Contact finder: ${i.contact}')" class="mt-3 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold">Claim Item</button>
-            </div>`;
-          }
-        });
-      });
-    }
-  </script>
-</body>
-</html>
+        <!-- 2. GRIEVANCE PORTAL -->
+        <section id="view-grievance" class="section">
+            <div class="card">
+                <h2><i class="fa-solid fa-pen-to-square" style="color: #818cf8;"></i> Register Student Grievance</h2>
+                <form id="grievanceForm">
+                    <div class="grid-2">
+                        <div>
+                            <label>Roll Number</label>
+                            <input type="text" id="g-roll" required placeholder="e.g. 21BCE102">
+                        </div>
+                        <div>
+                            <label>Room No / Class No / Location</label>
+                            <input type="text" id="g-loc" required placeholder="e.g. Hostel B-204 / Lab 3">
+                        </div>
+                    </div>
+                    <label>Issue Category</label>
+                    <select id="g-cat">
+                        <option value="Hostel & Maintenance">Hostel & Maintenance</option>
+                        <option value="Academic Issue">Academic Issue</option>
+                        <option value="Infrastructure / Electrical">Infrastructure / Electrical</option>
+                        <option value="Canteen & Food">Canteen & Food Quality</option>
+                    </select>
+                    <label>Description of Issue</label>
+                    <textarea id="g-desc" rows="3" required placeholder="Describe the issue clearly..."></textarea>
+                    <label>Attach Proof Image (Optional)</label>
+                    <input type="file" id="g-img" accept="image/*">
+                    <button type="submit" class="btn"><i class="fa-solid fa-paper-plane"></i> Submit Ticket</button>
+                </form>
+                <div id="grievance-ticket-display"></div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fa-solid fa-magnifying-glass" style="color: #fbbf24;"></i> Track Complaint Status</h2>
+                <input type="text" id="g-track-id" placeholder="Enter Unique Ticket ID (e.g. GRV-83921)">
+                <button onclick="trackGrievance()" class="btn" style="background: linear-gradient(135deg, #f59e0b, #d97706);"><i class="fa-solid fa-compass"></i> Track Ticket</button>
+                <div id="g-track-result" style="margin-top:15px;"></div>
+            </div>
+        </section>
+
+        <!-- 3. RAGGING SOS PORTAL -->
+        <section id="view-sos" class="section">
+            <div class="card" style="border-color: rgba(244, 63, 94, 0.4); text-align: center; background: radial-gradient(circle at center, rgba(244, 63, 94, 0.15) 0%, rgba(18, 26, 47, 0.8) 100%);">
+                <h1 style="color: var(--danger); font-size: 2.3rem; margin-bottom: 10px;"><i class="fa-solid fa-bell-concierge"></i> ANTI-RAGGING SOS EMERGENCY</h1>
+                <p style="margin-bottom: 20px; color: var(--text-muted);">In case of any emergency, threat, or ragging issue inside campus, hit the SOS trigger immediately. Siren audio alert will sound at Admin Console.</p>
+                <label>Your Live Campus Location / Hostel Room No</label>
+                <input type="text" id="sos-loc" placeholder="e.g. Block C Ground Floor / Library Rear Entry" style="text-align:center; font-weight:700; font-size:1.1rem; border-color: rgba(244,63,94,0.4);">
+                <button onclick="triggerEmergencySOS()" class="btn" style="background: linear-gradient(135deg, #f43f5e, #be123c); font-size: 1.2rem; padding: 18px; margin-top: 20px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> PRESS SOS ALARM NOW
+                </button>
+            </div>
+        </section>
+
+        <!-- 4. OUT-PASS PORTAL -->
+        <section id="view-outpass" class="section">
+            <div class="card">
+                <h2><i class="fa-solid fa-passport" style="color: #34d399;"></i> Apply Out-Pass</h2>
+                <form id="outpassForm">
+                    <div class="grid-2">
+                        <div>
+                            <label>Student Full Name</label>
+                            <input type="text" id="op-name" required placeholder="Full Name">
+                        </div>
+                        <div>
+                            <label>Roll Number</label>
+                            <input type="text" id="op-roll" required placeholder="Roll No">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Student Contact</label>
+                            <input type="tel" id="op-sphone" required placeholder="Phone Number">
+                        </div>
+                        <div>
+                            <label>Parent Contact</label>
+                            <input type="tel" id="op-pphone" required placeholder="Parent Phone Number">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Destination / Visiting Place</label>
+                            <input type="text" id="op-dest" required placeholder="Destination Address">
+                        </div>
+                        <div>
+                            <label>Reason for Leave</label>
+                            <input type="text" id="op-reason" required placeholder="Reason">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Out Departure Date & Time</label>
+                            <input type="datetime-local" id="op-out" required>
+                        </div>
+                        <div>
+                            <label>Return Date & Time</label>
+                            <input type="datetime-local" id="op-in" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn"><i class="fa-solid fa-file-export"></i> Submit Request</button>
+                </form>
+                <div id="outpass-ticket-display"></div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fa-solid fa-download" style="color: #34d399;"></i> Check Approval & Download Gate Pass</h2>
+                <input type="text" id="op-search-id" placeholder="Enter Out-Pass Ticket ID (e.g. OTP-94012)">
+                <button onclick="checkOutpassStatus()" class="btn" style="background: linear-gradient(135deg, #10b981, #047857);"><i class="fa-solid fa-circle-check"></i> Verify Ticket Status</button>
+                <div id="op-download-container" style="margin-top:15px;"></div>
+            </div>
+        </section>
+
+        <!-- 5. LOST & FOUND PORTAL -->
+        <section id="view-lostfound" class="section">
+            <div class="card">
+                <h2><i class="fa-solid fa-box-open" style="color: #c084fc;"></i> Report Lost / Found Item</h2>
+                <form id="lfForm">
+                    <div class="grid-2">
+                        <div>
+                            <label>Report Type</label>
+                            <select id="lf-type">
+                                <option value="Lost">I Lost Something ❌</option>
+                                <option value="Found">I Found Something ✅</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Category</label>
+                            <select id="lf-cat">
+                                <option value="Electronics">Electronics (Phone, Laptop, Charger)</option>
+                                <option value="ID Cards / Docs">ID Card / Wallet / Keys</option>
+                                <option value="Clothing / Accessories">Bag / Watch / Glasses</option>
+                                <option value="Other">Other Items</option>
+                            </select>
+                        </div>
+                    </div>
+                    <label>Item Title</label>
+                    <input type="text" id="lf-title" required placeholder="e.g. Black Fastrack Watch / Red Boat Airpods">
+                    <label>Location (Where Lost / Found)</label>
+                    <input type="text" id="lf-loc" required placeholder="e.g. Canteen Hall / Basketball Court">
+                    <label>Contact Details</label>
+                    <input type="text" id="lf-contact
