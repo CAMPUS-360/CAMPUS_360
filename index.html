@@ -1,0 +1,2888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CAMPUS 360 - Smart Campus & Safety Portal</title>
+  
+  <!-- PWA & Mobile Meta Tags -->
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Campus 360">
+  <meta name="description" content="Campus 360 - Modern Campus Grievance, Live Attendance & Safety Management Portal">
+
+  <!-- Embedded Web App Manifest (Data URI for Single-File Architecture) -->
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22CAMPUS%20360%22%2C%22short_name%22%3A%22Campus360%22%2C%22description%22%3A%22Smart%20Campus%20Portal%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230f172a%22%2C%22theme_color%22%3A%22%230f172a%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Butf8%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20192%20192'%20fill%3D'none'%3E%3Crect%20width%3D'192'%20height%3D'192'%20rx%3D'40'%20fill%3D'%236366f1'%2F%3E%3Cpath%20d%3D'M96%2042L36%2074l60%2032%2060-32-60-32zm-42%2056v38c0%2016%2019%2028%2042%2028s42-12%2042-28V98l-42%2022-42-22z'%20fill%3D'white'%2F%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 10v6M2 10l10-5 10 5-10 5z'/%3E%3Cpath d='M6 12v5c3 3 9 3 12 0v-5'/%3E%3C/svg%3E">
+
+  <style>
+    /* ==========================================================================
+       CAMPUS 360 - MODERN DARK GLASSMORPHISM STYLESHEET
+       ========================================================================== */
+    :root {
+      --bg-dark: #0f172a;
+      --bg-darker: #090d16;
+      --card-bg: rgba(30, 41, 59, 0.72);
+      --card-hover: rgba(40, 53, 75, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.09);
+      --glass-border-focus: rgba(99, 102, 241, 0.6);
+      
+      --accent-indigo: #6366f1;
+      --accent-indigo-hover: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --cyan: #38bdf8;
+      
+      --present-green: #22c55e;
+      --present-bg: rgba(34, 197, 94, 0.16);
+      --present-border: rgba(34, 197, 94, 0.4);
+      
+      --absent-red: #ef4444;
+      --absent-bg: rgba(239, 68, 68, 0.16);
+      --absent-border: rgba(239, 68, 68, 0.4);
+      
+      --warn-amber: #f59e0b;
+      --warn-bg: rgba(245, 158, 11, 0.16);
+      --warn-border: rgba(245, 158, 11, 0.4);
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      
+      --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      --shadow-glass: 0 12px 36px 0 rgba(0, 0, 0, 0.45);
+      --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    /* Ambient Background Glows */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(100px);
+      opacity: 0.18;
+    }
+
+    body::before {
+      background: var(--accent-indigo);
+      top: -100px;
+      left: -100px;
+    }
+
+    body::after {
+      background: var(--cyan);
+      bottom: -100px;
+      right: -100px;
+    }
+
+    /* Top Sticky Header */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 0.75rem 1.25rem;
+      transition: var(--transition);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.5px;
+      cursor: pointer;
+    }
+
+    .logo-badge {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-indigo), #4338ca);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    .logo-badge svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .brand-logo span {
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-logo .accent-360 {
+      background: linear-gradient(to right, var(--accent-indigo), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-left: 2px;
+    }
+
+    /* Desktop Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.65);
+      padding: 4px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--glass-border);
+      gap: 4px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.5rem 1.1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .nav-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2.2;
+    }
+
+    .nav-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-btn.active {
+      background: var(--accent-indigo);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    /* Header Controls */
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .sync-status-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition);
+    }
+
+    .sync-status-badge:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--present-green);
+      box-shadow: 0 0 8px var(--present-green);
+      animation: pulse 2s infinite;
+    }
+
+    .sync-dot.offline {
+      background: var(--warn-amber);
+      box-shadow: 0 0 8px var(--warn-amber);
+    }
+
+    .sync-dot.syncing {
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+      animation: spin 1s infinite linear;
+    }
+
+    .pwa-install-btn {
+      display: none;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.85rem;
+      background: rgba(99, 102, 241, 0.18);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #c7d2fe;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pwa-install-btn:hover {
+      background: var(--accent-indigo);
+      color: #fff;
+    }
+
+    /* Mobile Bottom Navigation Bar */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--glass-border);
+      padding: 0.4rem 0.5rem;
+      z-index: 100;
+      justify-content: space-around;
+    }
+
+    .mobile-tab-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.45rem 0.2rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .mobile-tab-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .mobile-tab-btn.active {
+      color: var(--accent-indigo);
+    }
+
+    .mobile-tab-btn.active svg {
+      transform: translateY(-2px);
+      filter: drop-shadow(0 0 6px var(--accent-glow));
+    }
+
+    /* Main Container & View Management */
+    .main-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 5rem 1.25rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .view-section {
+      display: none;
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+
+    /* Glass Cards */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-glass);
+      transition: var(--transition);
+      margin-bottom: 1.5rem;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    /* Section Headings */
+    .section-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    select option {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem;
+      border-radius: var(--radius-md);
+      font-size: 0.925rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent-indigo);
+      color: white;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-indigo-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-success {
+      background: var(--present-green);
+      color: #064e3b;
+      font-weight: 700;
+    }
+
+    .btn-success:hover {
+      background: #16a34a;
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--absent-red);
+      color: white;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-icon {
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .badge-present {
+      background: var(--present-bg);
+      color: #4ade80;
+      border: 1px solid var(--present-border);
+    }
+
+    .badge-absent {
+      background: var(--absent-bg);
+      color: #f87171;
+      border: 1px solid var(--absent-border);
+    }
+
+    .badge-pending {
+      background: var(--warn-bg);
+      color: #fbbf24;
+      border: 1px solid var(--warn-border);
+    }
+
+    .badge-progress {
+      background: rgba(56, 189, 248, 0.16);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+
+    .badge-resolved {
+      background: var(--present-bg);
+      color: #4ade80;
+      border: 1px solid var(--present-border);
+    }
+
+    .badge-category {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    /* Pulse Dot for Badges */
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Student Portal Specifics */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(56, 189, 248, 0.08));
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-pill-card {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-val {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Parent Portal Specifics */
+    .search-box-container {
+      max-width: 680px;
+      margin: 0 auto 2rem auto;
+      text-align: center;
+    }
+
+    .search-input-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      background: rgba(15, 23, 42, 0.85);
+      padding: 0.4rem;
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .search-input-group input {
+      border: none;
+      background: transparent;
+      padding: 0.75rem 1rem;
+      font-size: 1.05rem;
+      box-shadow: none;
+    }
+
+    .search-input-group input:focus {
+      box-shadow: none;
+      border: none;
+    }
+
+    .sample-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.85rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .sample-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glass-border);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      color: #93c5fd;
+      transition: var(--transition);
+    }
+
+    .sample-chip:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--accent-indigo);
+      color: #fff;
+    }
+
+    /* Parent Presence Card */
+    .presence-result-card {
+      max-width: 720px;
+      margin: 0 auto;
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+    }
+
+    .presence-result-card.is-present {
+      background: linear-gradient(180deg, rgba(34, 197, 94, 0.12), rgba(30, 41, 59, 0.8));
+      border-color: var(--present-border);
+      box-shadow: 0 0 35px rgba(34, 197, 94, 0.15);
+    }
+
+    .presence-result-card.is-absent {
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.12), rgba(30, 41, 59, 0.8));
+      border-color: var(--absent-border);
+      box-shadow: 0 0 35px rgba(239, 68, 68, 0.15);
+    }
+
+    .presence-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 1.6rem;
+      border-radius: var(--radius-full);
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.25rem;
+    }
+
+    .presence-details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      text-align: left;
+      margin-top: 1.75rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .detail-item label {
+      margin-bottom: 0.15rem;
+      font-size: 0.75rem;
+    }
+
+    .detail-item p {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Admin Security Gate & Sub-Tabs */
+    .admin-gate-card {
+      max-width: 440px;
+      margin: 3rem auto;
+      text-align: center;
+    }
+
+    .admin-sub-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 0.75rem;
+      overflow-x: auto;
+    }
+
+    .sub-tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+
+    .sub-tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .sub-tab-btn.active {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.4);
+      color: #818cf8;
+    }
+
+    /* Tables & Responsive Cards */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--glass-border);
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text-muted);
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    td {
+      padding: 0.95rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Cards List (for complaints & mobile friendly) */
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .item-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .item-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .item-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .item-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .item-card-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.65rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .item-card-desc {
+      font-size: 0.875rem;
+      color: #cbd5e1;
+      line-height: 1.45;
+      margin-bottom: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent-indigo);
+    }
+
+    .item-card-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-top: auto;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+      animation: modalSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    @keyframes modalSlide {
+      from { transform: scale(0.94); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    /* Toast Notification */
+    #toast-container {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 0.85rem 1.2rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.9rem;
+      min-width: 280px;
+      max-width: 400px;
+      animation: toastIn 0.3s ease forwards;
+    }
+
+    @keyframes toastIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast.toast-success {
+      border-left: 4px solid var(--present-green);
+    }
+
+    .toast.toast-danger {
+      border-left: 4px solid var(--absent-red);
+    }
+
+    .toast.toast-info {
+      border-left: 4px solid var(--accent-indigo);
+    }
+
+    /* Filters Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .filter-bar select, .filter-bar input {
+      max-width: 220px;
+      padding: 0.5rem 0.85rem;
+      font-size: 0.85rem;
+    }
+
+    /* Mobile Responsive Tweaks */
+    @media (max-width: 768px) {
+      .nav-tabs {
+        display: none; /* Switch to bottom navigation bar on phones */
+      }
+
+      .mobile-bottom-nav {
+        display: flex;
+      }
+
+      .main-wrapper {
+        padding-bottom: 6.5rem;
+      }
+
+      .header-container {
+        padding: 0.25rem 0;
+      }
+
+      .items-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-bar select, .filter-bar input {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Top Sticky Glass Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-logo" onclick="app.navigate('student')">
+        <div class="logo-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div>
+          <span>CAMPUS</span><span class="accent-360">360</span>
+        </div>
+      </div>
+
+      <!-- Desktop View Navigation Tabs -->
+      <nav class="nav-tabs">
+        <button class="nav-btn active" id="nav-btn-student" onclick="app.navigate('student')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
+          Student Portal
+        </button>
+        <button class="nav-btn" id="nav-btn-parent" onclick="app.navigate('parent')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+          Parent Portal
+        </button>
+        <button class="nav-btn" id="nav-btn-admin" onclick="app.navigate('admin')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18M15 9h6M15 15h6"/></svg>
+          Admin Dashboard
+        </button>
+      </nav>
+
+      <!-- Sync Status Pill & Install Controls -->
+      <div class="header-controls">
+        <div class="sync-status-badge" onclick="app.openSyncModal()" title="Click to view sync details & cross-device sharing">
+          <span class="sync-dot" id="header-sync-dot"></span>
+          <span id="header-sync-text">Cloud Synced</span>
+        </div>
+        <button class="pwa-install-btn" id="btn-pwa-install" onclick="app.promptInstall()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Install
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Router Container -->
+  <main class="main-wrapper">
+    
+    <!-- ====================================================================
+         VIEW 1: STUDENT PORTAL (Grievance Submission & Tracking)
+         ==================================================================== -->
+    <section class="view-section active" id="view-student">
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <h1 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.35rem;">🎓 Student Safety & Grievance Hub</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 600px;">
+          Submit academic, hostel, or safety concerns directly to administration with real-time ticket tracking.
+        </p>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="stats-row">
+        <div class="stat-pill-card">
+          <div class="stat-icon" style="color: #6366f1;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div>
+            <div class="stat-val" id="stat-student-total">0</div>
+            <div class="stat-label">Total Grievances</div>
+          </div>
+        </div>
+        <div class="stat-pill-card">
+          <div class="stat-icon" style="color: #f59e0b;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <div class="stat-val" id="stat-student-pending">0</div>
+            <div class="stat-label">In Review / Pending</div>
+          </div>
+        </div>
+        <div class="stat-pill-card">
+          <div class="stat-icon" style="color: #22c55e;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <div class="stat-val" id="stat-student-resolved">0</div>
+            <div class="stat-label">Resolved Issues</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grievance Submission Form Card -->
+      <div class="glass-card">
+        <div class="section-header">
+          <h2 class="section-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-indigo)" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Lodge a Complaint / Grievance
+          </h2>
+          <p class="section-subtitle">Issues are routed instantly to campus deans, wardens, and safety authorities.</p>
+        </div>
+
+        <form id="form-submit-grievance" onsubmit="app.handleGrievanceSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="grievance-roll">Student Roll Number *</label>
+              <input type="text" id="grievance-roll" placeholder="e.g. CS2026-001" required autocomplete="off" oninput="app.onStudentRollInput(this.value)">
+            </div>
+            <div class="form-group">
+              <label for="grievance-name">Student Full Name *</label>
+              <input type="text" id="grievance-name" placeholder="Full legal name" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="grievance-category">Issue Category *</label>
+              <select id="grievance-category" required>
+                <option value="Hostel & Accommodation">Hostel & Accommodation (Water, Electric, Cleanliness)</option>
+                <option value="Academic & Faculty">Academic & Faculty Affairs</option>
+                <option value="Campus Safety & Security">Campus Safety & Security / Ragging Free Zone</option>
+                <option value="Mess & Dining Facilities">Mess & Food Hygiene</option>
+                <option value="Infrastructure & Wi-Fi">Campus Wi-Fi, Labs & Infrastructure</option>
+                <option value="Medical & Health Support">Health Center & Medical Aid</option>
+                <option value="General Administration">General Administrative Issue</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="grievance-priority">Urgency Level</label>
+              <select id="grievance-priority">
+                <option value="Standard">Normal Priority</option>
+                <option value="Urgent">Urgent Priority</option>
+                <option value="Critical">Critical (Immediate Attention)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="grievance-desc">Description of the Concern *</label>
+            <textarea id="grievance-desc" placeholder="Please provide specific details, room/building numbers, and timing of the incident..." required></textarea>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="reset" class="btn btn-outline">Clear</button>
+            <button type="submit" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Submit Grievance
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Grievance History / Tracker -->
+      <div class="glass-card">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <h2 class="section-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Recent Campus Grievances & Status
+            </h2>
+            <p class="section-subtitle">Track resolution progress transparently across all submitted tickets.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <input type="text" id="filter-student-search" placeholder="Search by Roll No or ID..." style="max-width: 200px; padding: 0.4rem 0.75rem; font-size: 0.85rem;" oninput="app.renderStudentGrievanceList()">
+          </div>
+        </div>
+
+        <div id="student-grievance-list" class="items-grid">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ====================================================================
+         VIEW 2: PARENT PORTAL (Live Presence & Attendance Search)
+         ==================================================================== -->
+    <section class="view-section" id="view-parent">
+      <div class="search-box-container">
+        <span class="badge badge-category" style="margin-bottom: 0.65rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Parent & Guardian Safety Desk
+        </span>
+        <h1 style="font-size: 1.85rem; font-weight: 800; margin-bottom: 0.5rem;">Live Campus Presence Verification</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Enter your ward's Roll Number to check their real-time RFID biometric gate status, attendance record, and current campus location.
+        </p>
+
+        <form onsubmit="app.handleParentSearch(event)" class="search-input-group">
+          <input type="text" id="parent-search-roll" placeholder="Enter Student Roll Number (e.g. CS2026-001)" required autocomplete="off">
+          <button type="submit" class="btn btn-primary" style="border-radius: var(--radius-md);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Search
+          </button>
+        </form>
+
+        <div class="sample-chips">
+          <span>Quick Demo Search:</span>
+          <span class="sample-chip" onclick="app.quickParentSearch('CS2026-001')">CS2026-001 (Inside)</span>
+          <span class="sample-chip" onclick="app.quickParentSearch('EC2026-014')">EC2026-014 (Inside)</span>
+          <span class="sample-chip" onclick="app.quickParentSearch('ME2026-007')">ME2026-007 (Outside)</span>
+          <span class="sample-chip" onclick="app.quickParentSearch('IT2026-022')">IT2026-022 (Inside)</span>
+        </div>
+      </div>
+
+      <!-- Presence Search Result Container -->
+      <div id="parent-presence-result">
+        <!-- Default State Prompt -->
+        <div class="glass-card" style="text-align: center; padding: 3rem 1.5rem; max-width: 680px; margin: 0 auto;">
+          <div style="width: 56px; height: 56px; background: rgba(99, 102, 241, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; color: var(--accent-indigo);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <h3 style="font-size: 1.15rem; font-weight: 700;">No Student Selected</h3>
+          <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem;">
+            Type a Roll Number above or click any demo chip to inspect real-time safety and gate entry logs.
+          </p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ====================================================================
+         VIEW 3: ADMIN DASHBOARD (PIN-Protected, Full Grievance & Attendance CRUD)
+         ==================================================================== -->
+    <section class="view-section" id="view-admin">
+      
+      <!-- Admin Security Gatekeeper (Passcode verification) -->
+      <div id="admin-lock-screen" class="admin-gate-card glass-card">
+        <div style="width: 54px; height: 54px; background: rgba(99, 102, 241, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem auto; color: var(--accent-indigo);">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.35rem;">Admin Access Verification</h2>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">
+          Security credentials are required to modify student records and manage complaints.
+        </p>
+
+        <form onsubmit="app.handleAdminLogin(event)">
+          <div class="form-group" style="text-align: left;">
+            <label for="admin-pin">Admin Security Passcode</label>
+            <input type="password" id="admin-pin" placeholder="Enter PIN (Default: admin123)" required autocomplete="current-password">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Unlock Dashboard
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" onclick="app.quickUnlockAdmin()">
+              ⚡ Demo 1-Click Quick Unlock (admin123)
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Unlocked Admin Management Console -->
+      <div id="admin-main-console" style="display: none;">
+        
+        <!-- Admin Top Action Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+          <div>
+            <h1 style="font-size: 1.6rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+              <span style="color: var(--accent-indigo);">🛡️</span> Campus Central Console
+            </h1>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Manage real-time campus presence, delete complaints, and review alerts.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline btn-sm" onclick="app.lockAdmin()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Lock Console
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="app.openSyncModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              Sync & Cloud Backup
+            </button>
+          </div>
+        </div>
+
+        <!-- Admin Sub Navigation Tabs -->
+        <div class="admin-sub-tabs">
+          <button class="sub-tab-btn active" id="subtab-btn-grievances" onclick="app.switchAdminTab('grievances')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Grievances & Complaints (<span id="count-admin-grievances">0</span>)
+          </button>
+          <button class="sub-tab-btn" id="subtab-btn-attendance" onclick="app.switchAdminTab('attendance')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Student Attendance Roster (<span id="count-admin-students">0</span>)
+          </button>
+        </div>
+
+        <!-- ================================================================
+             SUBTAB 1: GRIEVANCE MANAGEMENT (Status Update + DELETE BUTTONS)
+             ================================================================ -->
+        <div id="admin-tab-grievances">
+          <!-- Summary Metrics -->
+          <div class="stats-row">
+            <div class="stat-pill-card">
+              <div class="stat-icon" style="color: #6366f1;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-stat-total">0</div>
+                <div class="stat-label">Total Logged</div>
+              </div>
+            </div>
+            <div class="stat-pill-card">
+              <div class="stat-icon" style="color: #f59e0b;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-stat-pending">0</div>
+                <div class="stat-label">Pending Review</div>
+              </div>
+            </div>
+            <div class="stat-pill-card">
+              <div class="stat-icon" style="color: #38bdf8;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-stat-progress">0</div>
+                <div class="stat-label">In Progress</div>
+              </div>
+            </div>
+            <div class="stat-pill-card">
+              <div class="stat-icon" style="color: #22c55e;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-stat-resolved">0</div>
+                <div class="stat-label">Resolved</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grievances Filter & Search Bar -->
+          <div class="filter-bar">
+            <input type="text" id="admin-search-grievance" placeholder="Search by Ticket ID, Roll, or Text..." oninput="app.renderAdminGrievances()">
+            <select id="admin-filter-category" onchange="app.renderAdminGrievances()">
+              <option value="ALL">All Categories</option>
+              <option value="Hostel & Accommodation">Hostel & Accommodation</option>
+              <option value="Academic & Faculty">Academic & Faculty</option>
+              <option value="Campus Safety & Security">Campus Safety & Security</option>
+              <option value="Mess & Dining Facilities">Mess & Dining</option>
+              <option value="Infrastructure & Wi-Fi">Infrastructure & Wi-Fi</option>
+            </select>
+            <select id="admin-filter-status" onchange="app.renderAdminGrievances()">
+              <option value="ALL">All Statuses</option>
+              <option value="Pending">Pending Only</option>
+              <option value="In Progress">In Progress Only</option>
+              <option value="Resolved">Resolved Only</option>
+            </select>
+          </div>
+
+          <!-- Admin Grievance Cards List with DELETE Button -->
+          <div id="admin-grievances-list" class="items-grid">
+            <!-- Dynamically injected cards -->
+          </div>
+        </div>
+
+        <!-- ================================================================
+             SUBTAB 2: STUDENT ATTENDANCE MANAGEMENT (Full CRUD)
+             ================================================================ -->
+        <div id="admin-tab-attendance" style="display: none;">
+          
+          <!-- Attendance Counters -->
+          <div class="stats-row">
+            <div class="stat-pill-card">
+              <div class="stat-icon" style="color: #6366f1;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-stat-enrolled">0</div>
+                <div class="stat-label">Total Registered</div>
+              </div>
+            </div>
+            <div class="stat-pill-card">
+              <div class="stat-icon" style="color: #22c55e;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-stat-inside">0</div>
+                <div class="stat-label">Inside Campus</div>
+              </div>
+            </div>
+            <div class="stat-pill-card">
+              <div class="stat-icon" style="color: #ef4444;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-stat-outside">0</div>
+                <div class="stat-label">Outside Campus</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add New Student Record Form Card -->
+          <div class="glass-card">
+            <div class="section-header">
+              <h2 class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-indigo)" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                Add / Register New Student Attendance Record
+              </h2>
+              <p class="section-subtitle">Enroll student into RFID gate monitoring and parent live-tracker database.</p>
+            </div>
+
+            <form id="form-add-student" onsubmit="app.handleAddStudent(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="new-student-roll">Roll Number *</label>
+                  <input type="text" id="new-student-roll" placeholder="e.g. CS2026-088" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label for="new-student-name">Student Full Name *</label>
+                  <input type="text" id="new-student-name" placeholder="e.g. Siddharth Sen" required>
+                </div>
+                <div class="form-group">
+                  <label for="new-student-dept">Department & Branch *</label>
+                  <input type="text" id="new-student-dept" placeholder="e.g. Computer Science (CSE)" required>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="new-student-status">Current Presence Status *</label>
+                  <select id="new-student-status" required>
+                    <option value="Present">🟢 Present (Inside Campus)</option>
+                    <option value="Absent">🔴 Absent (Outside Campus)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="new-student-location">Current Location / Hostel Block</label>
+                  <input type="text" id="new-student-location" placeholder="e.g. Hostel Block B - Room 304">
+                </div>
+                <div class="form-group">
+                  <label for="new-student-parent-phone">Parent Contact Number</label>
+                  <input type="text" id="new-student-parent-phone" placeholder="e.g. +91 98765 43210">
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem;">
+                <button type="submit" class="btn btn-primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Register Student Record
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Student Attendance List Table / Cards -->
+          <div class="glass-card">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <h2 class="section-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  Live Student Attendance Directory
+                </h2>
+                <p class="section-subtitle">Toggle status with 1-click, update details, or delete student records.</p>
+              </div>
+              <div class="filter-bar" style="margin-bottom: 0;">
+                <input type="text" id="admin-search-student" placeholder="Filter student name or roll..." oninput="app.renderAdminStudents()">
+                <select id="admin-filter-presence" onchange="app.renderAdminStudents()">
+                  <option value="ALL">All Students</option>
+                  <option value="Present">Inside Campus Only</option>
+                  <option value="Absent">Outside Campus Only</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Responsive Table -->
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Roll Number</th>
+                    <th>Student Name</th>
+                    <th>Branch / Dept</th>
+                    <th>Presence Status</th>
+                    <th>Last Gate Check-in</th>
+                    <th>Location / Zone</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-student-table-body">
+                  <!-- Dynamically populated rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Mobile Bottom Floating Navigation Dock -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-tab-btn active" id="mob-nav-student" onclick="app.navigate('student')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
+      Student
+    </button>
+    <button class="mobile-tab-btn" id="mob-nav-parent" onclick="app.navigate('parent')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+      Parent
+    </button>
+    <button class="mobile-tab-btn" id="mob-nav-admin" onclick="app.navigate('admin')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18M15 9h6M15 15h6"/></svg>
+      Admin
+    </button>
+  </nav>
+
+  <!-- ====================================================================
+       MODAL 1: DELETE CONFIRMATION MODAL
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-delete-confirm">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #f87171; display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
+          Confirm Permanent Deletion
+        </h3>
+        <button class="modal-close" onclick="app.closeModal('modal-delete-confirm')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="delete-confirm-text" style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.5;">
+          Are you sure you want to permanently delete this record? This action cannot be undone.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-delete-confirm')">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-delete" onclick="app.executeDelete()">
+          🗑️ Delete Record
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 2: EDIT STUDENT RECORD MODAL
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-edit-student">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-indigo)" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Edit Student Record
+        </h3>
+        <button class="modal-close" onclick="app.closeModal('modal-edit-student')">&times;</button>
+      </div>
+      <form onsubmit="app.handleSaveEditedStudent(event)">
+        <div class="modal-body">
+          <input type="hidden" id="edit-student-original-roll">
+          <div class="form-group">
+            <label for="edit-student-roll">Roll Number</label>
+            <input type="text" id="edit-student-roll" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-student-name">Student Full Name</label>
+            <input type="text" id="edit-student-name" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-student-dept">Department & Branch</label>
+            <input type="text" id="edit-student-dept" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-student-status">Presence Status</label>
+            <select id="edit-student-status">
+              <option value="Present">🟢 Present (Inside Campus)</option>
+              <option value="Absent">🔴 Absent (Outside Campus)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="edit-student-location">Location / Zone / Room</label>
+            <input type="text" id="edit-student-location">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-edit-student')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 3: CLOUD SYNC & DATA PORTABILITY (Fix cross-device sync)
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-cloud-sync">
+    <div class="modal-dialog" style="max-width: 560px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+          Real-Time Sync & Multi-Device Manager
+        </h3>
+        <button class="modal-close" onclick="app.closeModal('modal-cloud-sync')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">CURRENT STORAGE STATUS</span>
+            <span class="badge badge-present" id="sync-modal-badge">🟢 Active & In Sync</span>
+          </div>
+          <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">
+            Data is stored in real-time in local storage with automatic multi-tab broadcast sync and mock cloud network replication.
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label>Campus Cloud Sync Channel Key</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="sync-channel-key" value="CAMPUS360-SHARED-MAIN" readonly>
+            <button class="btn btn-outline btn-sm" onclick="app.copySyncKey()">Copy</button>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--glass-border);">
+          <label style="margin-bottom: 0.5rem;">Transfer Data to Another Mobile / Laptop</label>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+            Export the current live database as a JSON snapshot, or load a snapshot from your other device:
+          </p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm" onclick="app.exportDatabase()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Export Backup JSON
+            </button>
+            <label class="btn btn-outline btn-sm" style="margin-bottom: 0; cursor: pointer;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+              Import Backup JSON
+              <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="app.importDatabase(event)">
+            </label>
+            <button class="btn btn-outline btn-sm" onclick="app.resetDemoData()" style="color: #fbbf24;">
+              🔄 Reset Demo Data
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-sm" onclick="app.closeModal('modal-cloud-sync')">Done</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       JAVASCRIPT ENGINE (Store, Router, CRUD, PWA & Broadcast Sync)
+       ==================================================================== -->
+  <script>
+    /* ==========================================================================
+       DATA SEED & MOCK REPOSITORY
+       ========================================================================== */
+    const INITIAL_STUDENTS = [
+      {
+        roll: "CS2026-001",
+        name: "Aarav Sharma",
+        dept: "Computer Science & Engineering",
+        status: "Present",
+        location: "Central Library - Reading Hall 2",
+        lastGateTime: "Today at 08:42 AM",
+        lastGateType: "Gate 1 (Academic Entry)",
+        attendancePct: 96.4,
+        hostel: "Vindhya Hostel - Block A, Room 204",
+        parentPhone: "+91 98765 43210"
+      },
+      {
+        roll: "CS2026-002",
+        name: "Priya Patel",
+        dept: "Computer Science & Engineering",
+        status: "Present",
+        location: "AI & Robotics Research Lab 4",
+        lastGateTime: "Today at 09:15 AM",
+        lastGateType: "Gate 2 (Science Complex)",
+        attendancePct: 98.1,
+        hostel: "Kaveri Girls Hostel - Room 102",
+        parentPhone: "+91 98765 43211"
+      },
+      {
+        roll: "EC2026-014",
+        name: "Rohan Verma",
+        dept: "Electronics & Communication",
+        status: "Present",
+        location: "VLSI Design Center - Floor 3",
+        lastGateTime: "Today at 10:05 AM",
+        lastGateType: "Gate 1 (Academic Entry)",
+        attendancePct: 92.5,
+        hostel: "Himalaya Hostel - Block B, Room 318",
+        parentPhone: "+91 98765 43212"
+      },
+      {
+        roll: "ME2026-007",
+        name: "Ananya Iyer",
+        dept: "Mechanical Engineering",
+        status: "Absent",
+        location: "Outside Campus (Outpass: Industrial Visit / Home)",
+        lastGateTime: "Today at 01:20 PM",
+        lastGateType: "Main Highway Exit Gate",
+        attendancePct: 88.7,
+        hostel: "Kaveri Girls Hostel - Room 305",
+        parentPhone: "+91 98765 43213"
+      },
+      {
+        roll: "IT2026-022",
+        name: "Vikram Malhotra",
+        dept: "Information Technology",
+        status: "Present",
+        location: "Hostel Block C - High Performance Computing Zone",
+        lastGateTime: "Today at 07:50 AM",
+        lastGateType: "Gate 3 (Hostel Quad)",
+        attendancePct: 94.0,
+        hostel: "Vindhya Hostel - Block C, Room 112",
+        parentPhone: "+91 98765 43214"
+      },
+      {
+        roll: "CE2026-009",
+        name: "Neha Reddy",
+        dept: "Civil Engineering",
+        status: "Present",
+        location: "Structural Mechanics Lab",
+        lastGateTime: "Today at 09:30 AM",
+        lastGateType: "Gate 1 (Academic Entry)",
+        attendancePct: 91.2,
+        hostel: "Godavari Girls Hostel - Room 210",
+        parentPhone: "+91 98765 43215"
+      },
+      {
+        roll: "EE2026-031",
+        name: "Kabir Singh",
+        dept: "Electrical Engineering",
+        status: "Absent",
+        location: "Outside Campus (Medical Outpass)",
+        lastGateTime: "Today at 11:10 AM",
+        lastGateType: "Emergency South Gate",
+        attendancePct: 85.3,
+        hostel: "Himalaya Hostel - Block A, Room 104",
+        parentPhone: "+91 98765 43216"
+      }
+    ];
+
+    const INITIAL_GRIEVANCES = [
+      {
+        id: "GRV-2026-8812",
+        roll: "CS2026-001",
+        name: "Aarav Sharma",
+        category: "Hostel & Accommodation",
+        priority: "Urgent",
+        desc: "Low water pressure and geyser failure in Block A 2nd floor bathrooms for the last 2 days.",
+        status: "In Progress",
+        createdAt: "Today at 08:30 AM",
+        adminRemarks: "Plumber dispatch assigned to Hostel Block A. Expected fix by 4:00 PM."
+      },
+      {
+        id: "GRV-2026-8805",
+        roll: "EC2026-014",
+        name: "Rohan Verma",
+        category: "Infrastructure & Wi-Fi",
+        priority: "Standard",
+        desc: "Wi-Fi access points near VLSI lab 3 are experiencing frequent DNS drops during practical exams.",
+        status: "Resolved",
+        createdAt: "Yesterday at 04:15 PM",
+        adminRemarks: "Cisco switch firmware updated and access point restarted. Signal restored."
+      },
+      {
+        id: "GRV-2026-8799",
+        roll: "ME2026-007",
+        name: "Ananya Iyer",
+        category: "Campus Safety & Security",
+        priority: "Critical",
+        desc: "Streetlight outage on the walkway between Girls Hostel Quad and Central Dining Hall.",
+        status: "Pending",
+        createdAt: "Yesterday at 09:45 PM",
+        adminRemarks: ""
+      },
+      {
+        id: "GRV-2026-8784",
+        roll: "IT2026-022",
+        name: "Vikram Malhotra",
+        category: "Mess & Dining Facilities",
+        priority: "Standard",
+        desc: "Breakfast timings in South Mess need to be extended by 15 minutes to accommodate early morning laboratory batches.",
+        status: "Resolved",
+        createdAt: "Sep 11, 2026",
+        adminRemarks: "Catering committee approved extension: breakfast now served until 9:30 AM."
+      }
+    ];
+
+    /* ==========================================================================
+       STORAGE MANAGER WITH REAL-TIME SYNC & LOCALSTORAGE FALLBACK
+       ========================================================================== */
+    class StorageManager {
+      constructor() {
+        this.STORAGE_KEY = 'campus360_db_v1';
+        this.broadcastChannel = null;
+        
+        // Setup Cross-Tab BroadcastChannel
+        try {
+          if ('BroadcastChannel' in window) {
+            this.broadcastChannel = new BroadcastChannel('campus360_sync_bus');
+            this.broadcastChannel.onmessage = (event) => {
+              if (event.data && event.data.type === 'DATA_UPDATED') {
+                this.handleRemoteUpdate();
+              }
+            };
+          }
+        } catch (e) {
+          console.warn('BroadcastChannel not supported', e);
+        }
+
+        // Storage Event listener for other tabs fallback
+        window.addEventListener('storage', (e) => {
+          if (e.key === this.STORAGE_KEY) {
+            this.handleRemoteUpdate();
+          }
+        });
+      }
+
+      getData() {
+        try {
+          const raw = localStorage.getItem(this.STORAGE_KEY);
+          if (raw) {
+            return JSON.parse(raw);
+          }
+        } catch (e) {
+          console.error('Failed reading from localStorage', e);
+        }
+        
+        // Return default seeded data
+        const initial = {
+          students: INITIAL_STUDENTS,
+          grievances: INITIAL_GRIEVANCES,
+          lastSynced: new Date().toISOString()
+        };
+        this.saveData(initial, false);
+        return initial;
+      }
+
+      saveData(data, notify = true) {
+        try {
+          data.lastSynced = new Date().toISOString();
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+          
+          if (notify) {
+            if (this.broadcastChannel) {
+              this.broadcastChannel.postMessage({ type: 'DATA_UPDATED', timestamp: Date.now() });
+            }
+            app.indicateSyncing();
+          }
+        } catch (e) {
+          console.error('Failed writing to localStorage', e);
+        }
+      }
+
+      handleRemoteUpdate() {
+        app.showToast('Data synced in real-time from another device/tab', 'info');
+        app.refreshCurrentView();
+      }
+    }
+
+    /* ==========================================================================
+       CAMPUS 360 MAIN CONTROLLER
+       ========================================================================== */
+    class Campus360App {
+      constructor() {
+        this.storage = new StorageManager();
+        this.currentView = 'student';
+        this.currentAdminTab = 'grievances';
+        this.isAdminUnlocked = false;
+        this.deleteTarget = null; // { type: 'grievance' | 'student', id: string }
+        this.installPromptEvent = null;
+      }
+
+      init() {
+        // Handle URL Hash navigation
+        window.addEventListener('hashchange', () => this.handleHashChange());
+        if (window.location.hash) {
+          const viewFromHash = window.location.hash.replace('#', '');
+          if (['student', 'parent', 'admin'].includes(viewFromHash)) {
+            this.currentView = viewFromHash;
+          }
+        }
+
+        // Check if admin is already unlocked in current session
+        if (sessionStorage.getItem('campus360_admin_auth') === 'true') {
+          this.isAdminUnlocked = true;
+        }
+
+        // Setup PWA install button listener
+        window.addEventListener('beforeinstallprompt', (e) => {
+          e.preventDefault();
+          this.installPromptEvent = e;
+          const pwaBtn = document.getElementById('btn-pwa-install');
+          if (pwaBtn) pwaBtn.style.display = 'inline-flex';
+        });
+
+        // Initialize Inline Service Worker (Single File PWA Support)
+        this.registerInlineServiceWorker();
+
+        // Render initial view
+        this.renderView();
+        this.refreshData();
+      }
+
+      /* ========================================================================
+         NAVIGATION & ROUTING
+         ======================================================================== */
+      navigate(viewName) {
+        if (!['student', 'parent', 'admin'].includes(viewName)) return;
+        this.currentView = viewName;
+        window.location.hash = viewName;
+        this.renderView();
+      }
+
+      handleHashChange() {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && ['student', 'parent', 'admin'].includes(hash)) {
+          this.currentView = hash;
+          this.renderView();
+        }
+      }
+
+      renderView() {
+        // Toggle view containers
+        document.querySelectorAll('.view-section').forEach(section => {
+          section.classList.remove('active');
+        });
+        const activeSection = document.getElementById(`view-${this.currentView}`);
+        if (activeSection) activeSection.classList.add('active');
+
+        // Update Desktop Header Buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const activeNavBtn = document.getElementById(`nav-btn-${this.currentView}`);
+        if (activeNavBtn) activeNavBtn.classList.add('active');
+
+        // Update Mobile Bottom Bar Buttons
+        document.querySelectorAll('.mobile-tab-btn').forEach(btn => btn.classList.remove('active'));
+        const activeMobBtn = document.getElementById(`mob-nav-${this.currentView}`);
+        if (activeMobBtn) activeMobBtn.classList.add('active');
+
+        // View specific refresh
+        if (this.currentView === 'student') {
+          this.renderStudentGrievanceList();
+        } else if (this.currentView === 'admin') {
+          this.renderAdminView();
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      refreshCurrentView() {
+        this.refreshData();
+        if (this.currentView === 'student') {
+          this.renderStudentGrievanceList();
+        } else if (this.currentView === 'admin') {
+          this.renderAdminView();
+        } else if (this.currentView === 'parent') {
+          const searchInput = document.getElementById('parent-search-roll');
+          if (searchInput && searchInput.value.trim()) {
+            this.searchParentStatus(searchInput.value.trim());
+          }
+        }
+      }
+
+      refreshData() {
+        const data = this.storage.getData();
+        
+        // Update Student View Stats
+        const total = data.grievances.length;
+        const pending = data.grievances.filter(g => g.status === 'Pending' || g.status === 'In Progress').length;
+        const resolved = data.grievances.filter(g => g.status === 'Resolved').length;
+
+        const totalElem = document.getElementById('stat-student-total');
+        const pendingElem = document.getElementById('stat-student-pending');
+        const resolvedElem = document.getElementById('stat-student-resolved');
+
+        if (totalElem) totalElem.innerText = total;
+        if (pendingElem) pendingElem.innerText = pending;
+        if (resolvedElem) resolvedElem.innerText = resolved;
+
+        // Update Admin Badge Counts
+        const countGrievances = document.getElementById('count-admin-grievances');
+        const countStudents = document.getElementById('count-admin-students');
+        if (countGrievances) countGrievances.innerText = total;
+        if (countStudents) countStudents.innerText = data.students.length;
+      }
+
+      /* ========================================================================
+         STUDENT GRIEVANCE ENGINE
+         ======================================================================== */
+      onStudentRollInput(rollVal) {
+        const data = this.storage.getData();
+        const found = data.students.find(s => s.roll.toLowerCase() === rollVal.trim().toLowerCase());
+        if (found) {
+          const nameInput = document.getElementById('grievance-name');
+          if (nameInput && !nameInput.value) {
+            nameInput.value = found.name;
+          }
+        }
+      }
+
+      handleGrievanceSubmit(e) {
+        e.preventDefault();
+        const roll = document.getElementById('grievance-roll').value.trim().toUpperCase();
+        const name = document.getElementById('grievance-name').value.trim();
+        const category = document.getElementById('grievance-category').value;
+        const priority = document.getElementById('grievance-priority').value;
+        const desc = document.getElementById('grievance-desc').value.trim();
+
+        if (!roll || !name || !desc) {
+          this.showToast('Please fill all required fields.', 'danger');
+          return;
+        }
+
+        const newId = `GRV-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+        const now = new Date();
+        const timeStr = `Today at ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+        const newGrievance = {
+          id: newId,
+          roll,
+          name,
+          category,
+          priority,
+          desc,
+          status: 'Pending',
+          createdAt: timeStr,
+          adminRemarks: ''
+        };
+
+        const data = this.storage.getData();
+        data.grievances.unshift(newGrievance);
+        this.storage.saveData(data);
+
+        // Reset form
+        document.getElementById('form-submit-grievance').reset();
+        this.showToast(`Ticket ${newId} logged successfully!`, 'success');
+        this.refreshData();
+        this.renderStudentGrievanceList();
+      }
+
+      renderStudentGrievanceList() {
+        const data = this.storage.getData();
+        const container = document.getElementById('student-grievance-list');
+        if (!container) return;
+
+        const filterSearch = (document.getElementById('filter-student-search')?.value || '').toLowerCase().trim();
+
+        let list = data.grievances;
+        if (filterSearch) {
+          list = list.filter(g => 
+            g.roll.toLowerCase().includes(filterSearch) || 
+            g.id.toLowerCase().includes(filterSearch) ||
+            g.name.toLowerCase().includes(filterSearch)
+          );
+        }
+
+        if (list.length === 0) {
+          container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem; color: var(--text-muted); background: rgba(0,0,0,0.15); border-radius: var(--radius-md);">
+              <p>No complaints found matching your search.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = list.map(g => {
+          let statusBadgeClass = 'badge-pending';
+          if (g.status === 'In Progress') statusBadgeClass = 'badge-progress';
+          if (g.status === 'Resolved') statusBadgeClass = 'badge-resolved';
+
+          let priorityColor = '#94a3b8';
+          if (g.priority === 'Urgent') priorityColor = '#f59e0b';
+          if (g.priority === 'Critical') priorityColor = '#ef4444';
+
+          return `
+            <div class="item-card">
+              <div>
+                <div class="item-card-header">
+                  <span class="badge badge-category">${this.escapeHtml(g.category)}</span>
+                  <span class="badge ${statusBadgeClass}">
+                    <span class="status-dot"></span>
+                    ${g.status}
+                  </span>
+                </div>
+                <div class="item-card-title">${this.escapeHtml(g.name)} (${this.escapeHtml(g.roll)})</div>
+                <div class="item-card-meta">
+                  <span>Ticket: <strong>${g.id}</strong></span> &bull;
+                  <span>${g.createdAt}</span> &bull;
+                  <span style="color: ${priorityColor}; font-weight: 700;">${g.priority}</span>
+                </div>
+                <div class="item-card-desc">${this.escapeHtml(g.desc)}</div>
+                ${g.adminRemarks ? `
+                  <div style="font-size: 0.8rem; background: rgba(34, 197, 94, 0.08); border-left: 3px solid var(--present-green); padding: 0.6rem; border-radius: 4px; color: #86efac; margin-bottom: 0.5rem;">
+                    <strong>Admin Note:</strong> ${this.escapeHtml(g.adminRemarks)}
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      /* ========================================================================
+         PARENT PORTAL ENGINE (Live Campus Presence Search)
+         ======================================================================== */
+      handleParentSearch(e) {
+        e.preventDefault();
+        const rollInput = document.getElementById('parent-search-roll');
+        if (!rollInput) return;
+        this.searchParentStatus(rollInput.value.trim());
+      }
+
+      quickParentSearch(roll) {
+        const rollInput = document.getElementById('parent-search-roll');
+        if (rollInput) rollInput.value = roll;
+        this.searchParentStatus(roll);
+      }
+
+      searchParentStatus(roll) {
+        if (!roll) return;
+        const container = document.getElementById('parent-presence-result');
+        if (!container) return;
+
+        const data = this.storage.getData();
+        const student = data.students.find(s => s.roll.toLowerCase() === roll.toLowerCase());
+
+        if (!student) {
+          container.innerHTML = `
+            <div class="glass-card" style="text-align: center; padding: 2.5rem 1.5rem; max-width: 680px; margin: 0 auto; border-color: var(--absent-border);">
+              <div style="width: 52px; height: 52px; background: var(--absent-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; color: var(--absent-red);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              </div>
+              <h3 style="font-size: 1.2rem; font-weight: 700; color: #fca5a5;">Student Record Not Found</h3>
+              <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.35rem;">
+                No registered student matches Roll Number "<strong>${this.escapeHtml(roll)}</strong>". Please verify with academic records or contact administration.
+              </p>
+            </div>
+          `;
+          return;
+        }
+
+        const isPresent = student.status === 'Present';
+        const cardClass = isPresent ? 'is-present' : 'is-absent';
+        const badgeClass = isPresent ? 'badge-present' : 'badge-absent';
+        const badgeText = isPresent ? '🟢 PRESENT (Inside Campus)' : '🔴 ABSENT (Outside Campus)';
+        const presenceSubtext = isPresent 
+          ? `Verified via Gate Biometric RFID. Current Location: <strong>${this.escapeHtml(student.location || 'Inside Campus Grounds')}</strong>`
+          : `Departure Recorded at Gate. Location: <strong>${this.escapeHtml(student.location || 'Outside Campus')}</strong>`;
+
+        container.innerHTML = `
+          <div class="glass-card presence-result-card ${cardClass}">
+            <div class="presence-hero-badge ${badgeClass}">
+              <span class="status-dot" style="width: 10px; height: 10px;"></span>
+              ${badgeText}
+            </div>
+
+            <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.25rem;">${this.escapeHtml(student.name)}</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+              Roll Number: <strong>${student.roll}</strong> &bull; ${this.escapeHtml(student.dept)}
+            </p>
+
+            <div style="font-size: 0.9rem; padding: 0.75rem 1.25rem; background: rgba(0,0,0,0.25); border-radius: var(--radius-md); display: inline-block; margin-bottom: 1rem;">
+              ${presenceSubtext}
+            </div>
+
+            <div class="presence-details-grid">
+              <div class="detail-item">
+                <label>Last Gate Event</label>
+                <p>${student.lastGateTime || 'Today'}</p>
+                <span style="font-size: 0.75rem; color: var(--text-dim);">${student.lastGateType || 'Main Campus Gate'}</span>
+              </div>
+              <div class="detail-item">
+                <label>Hostel / Room Allotment</label>
+                <p>${this.escapeHtml(student.hostel || 'Day Scholar')}</p>
+              </div>
+              <div class="detail-item">
+                <label>Semester Attendance Rate</label>
+                <p style="color: #38bdf8;">${student.attendancePct || 94.2}%</p>
+                <span style="font-size: 0.75rem; color: #4ade80;">Meets Minimum Academic Requirement</span>
+              </div>
+              <div class="detail-item">
+                <label>Emergency Parent Contact</label>
+                <p>${student.parentPhone || '+91 98765 43210'}</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.75rem; display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
+              <button class="btn btn-outline btn-sm" onclick="app.showToast('Connecting to 24x7 Security Control Room (+91 1800-360-SAFE)', 'info')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                Call Security Control Room
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="app.showToast('Chief Hostel Warden: Dr. K. Raman (+91 94441 22000)', 'info')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Contact Hostel Warden
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      /* ========================================================================
+         ADMIN CONSOLE ENGINE (Full CRUD: Update, Toggle & DELETE)
+         ======================================================================== */
+      handleAdminLogin(e) {
+        e.preventDefault();
+        const pinInput = document.getElementById('admin-pin');
+        if (!pinInput) return;
+        const pin = pinInput.value.trim();
+
+        if (pin === 'admin123') {
+          this.isAdminUnlocked = true;
+          sessionStorage.setItem('campus360_admin_auth', 'true');
+          pinInput.value = '';
+          this.showToast('Admin Console Unlocked!', 'success');
+          this.renderAdminView();
+        } else {
+          this.showToast('Incorrect passcode. Try "admin123"', 'danger');
+        }
+      }
+
+      quickUnlockAdmin() {
+        this.isAdminUnlocked = true;
+        sessionStorage.setItem('campus360_admin_auth', 'true');
+        this.showToast('Unlocked with Demo Credentials!', 'success');
+        this.renderAdminView();
+      }
+
+      lockAdmin() {
+        this.isAdminUnlocked = false;
+        sessionStorage.removeItem('campus360_admin_auth');
+        this.showToast('Admin Console Locked.', 'info');
+        this.renderAdminView();
+      }
+
+      renderAdminView() {
+        const lockScreen = document.getElementById('admin-lock-screen');
+        const mainConsole = document.getElementById('admin-main-console');
+
+        if (!this.isAdminUnlocked) {
+          if (lockScreen) lockScreen.style.display = 'block';
+          if (mainConsole) mainConsole.style.display = 'none';
+          return;
+        }
+
+        if (lockScreen) lockScreen.style.display = 'none';
+        if (mainConsole) mainConsole.style.display = 'block';
+
+        this.switchAdminTab(this.currentAdminTab);
+      }
+
+      switchAdminTab(tabName) {
+        this.currentAdminTab = tabName;
+        document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.getElementById(`subtab-btn-${tabName}`);
+        if (activeBtn) activeBtn.classList.add('active');
+
+        const grievancesTab = document.getElementById('admin-tab-grievances');
+        const attendanceTab = document.getElementById('admin-tab-attendance');
+
+        if (tabName === 'grievances') {
+          if (grievancesTab) grievancesTab.style.display = 'block';
+          if (attendanceTab) attendanceTab.style.display = 'none';
+          this.renderAdminGrievances();
+        } else {
+          if (grievancesTab) grievancesTab.style.display = 'none';
+          if (attendanceTab) attendanceTab.style.display = 'block';
+          this.renderAdminStudents();
+        }
+      }
+
+      /* Admin SubTab 1: Grievance Management (with DELETE button) */
+      renderAdminGrievances() {
+        const data = this.storage.getData();
+        const container = document.getElementById('admin-grievances-list');
+        if (!container) return;
+
+        // Update Stats
+        const total = data.grievances.length;
+        const pending = data.grievances.filter(g => g.status === 'Pending').length;
+        const progress = data.grievances.filter(g => g.status === 'In Progress').length;
+        const resolved = data.grievances.filter(g => g.status === 'Resolved').length;
+
+        document.getElementById('admin-stat-total').innerText = total;
+        document.getElementById('admin-stat-pending').innerText = pending;
+        document.getElementById('admin-stat-progress').innerText = progress;
+        document.getElementById('admin-stat-resolved').innerText = resolved;
+
+        // Filters
+        const searchQuery = (document.getElementById('admin-search-grievance')?.value || '').toLowerCase().trim();
+        const categoryFilter = document.getElementById('admin-filter-category')?.value || 'ALL';
+        const statusFilter = document.getElementById('admin-filter-status')?.value || 'ALL';
+
+        let list = data.grievances;
+
+        if (categoryFilter !== 'ALL') {
+          list = list.filter(g => g.category === categoryFilter);
+        }
+
+        if (statusFilter !== 'ALL') {
+          list = list.filter(g => g.status === statusFilter);
+        }
+
+        if (searchQuery) {
+          list = list.filter(g => 
+            g.roll.toLowerCase().includes(searchQuery) ||
+            g.id.toLowerCase().includes(searchQuery) ||
+            g.name.toLowerCase().includes(searchQuery) ||
+            g.desc.toLowerCase().includes(searchQuery)
+          );
+        }
+
+        if (list.length === 0) {
+          container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem; color: var(--text-muted); background: rgba(0,0,0,0.2); border-radius: var(--radius-md);">
+              <p>No complaints match the selected filters.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = list.map(g => {
+          return `
+            <div class="item-card">
+              <div>
+                <div class="item-card-header">
+                  <span class="badge badge-category">${this.escapeHtml(g.category)}</span>
+                  <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <select style="padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: var(--radius-sm);" onchange="app.updateGrievanceStatus('${g.id}', this.value)">
+                      <option value="Pending" ${g.status === 'Pending' ? 'selected' : ''}>🟡 Pending</option>
+                      <option value="In Progress" ${g.status === 'In Progress' ? 'selected' : ''}>🔵 In Progress</option>
+                      <option value="Resolved" ${g.status === 'Resolved' ? 'selected' : ''}>🟢 Resolved</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="item-card-title">${this.escapeHtml(g.name)} (${this.escapeHtml(g.roll)})</div>
+                <div class="item-card-meta">
+                  <span>Ticket: <strong>${g.id}</strong></span> &bull;
+                  <span>${g.createdAt}</span> &bull;
+                  <span style="font-weight: 700; color: ${g.priority === 'Critical' ? '#ef4444' : g.priority === 'Urgent' ? '#f59e0b' : '#94a3b8'}">${g.priority}</span>
+                </div>
+
+                <div class="item-card-desc">${this.escapeHtml(g.desc)}</div>
+
+                <!-- Admin Remarks Editor -->
+                <div style="margin-bottom: 0.75rem;">
+                  <label style="font-size: 0.7rem;">Admin Action / Resolution Remark</label>
+                  <div style="display: flex; gap: 0.35rem;">
+                    <input type="text" id="remark-${g.id}" value="${this.escapeHtml(g.adminRemarks || '')}" placeholder="Add resolution note..." style="padding: 0.35rem 0.6rem; font-size: 0.8rem;">
+                    <button class="btn btn-outline btn-sm" onclick="app.saveAdminRemark('${g.id}')">Save</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Bar with prominent DELETE button -->
+              <div class="item-card-actions">
+                <span style="font-size: 0.75rem; color: var(--text-dim);">ID: ${g.id}</span>
+                <button class="btn btn-danger btn-sm" onclick="app.confirmDelete('grievance', '${g.id}', '${this.escapeHtml(g.id)}')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
+                  🗑️ Delete
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      updateGrievanceStatus(id, newStatus) {
+        const data = this.storage.getData();
+        const grievance = data.grievances.find(g => g.id === id);
+        if (grievance) {
+          grievance.status = newStatus;
+          this.storage.saveData(data);
+          this.showToast(`Ticket ${id} status updated to ${newStatus}`, 'success');
+          this.refreshData();
+          this.renderAdminGrievances();
+        }
+      }
+
+      saveAdminRemark(id) {
+        const input = document.getElementById(`remark-${id}`);
+        if (!input) return;
+        const remark = input.value.trim();
+
+        const data = this.storage.getData();
+        const grievance = data.grievances.find(g => g.id === id);
+        if (grievance) {
+          grievance.adminRemarks = remark;
+          this.storage.saveData(data);
+          this.showToast(`Remark saved for ${id}`, 'success');
+        }
+      }
+
+      /* Admin SubTab 2: Student Attendance Management (CRUD) */
+      handleAddStudent(e) {
+        e.preventDefault();
+        const roll = document.getElementById('new-student-roll').value.trim().toUpperCase();
+        const name = document.getElementById('new-student-name').value.trim();
+        const dept = document.getElementById('new-student-dept').value.trim();
+        const status = document.getElementById('new-student-status').value;
+        const location = document.getElementById('new-student-location').value.trim() || (status === 'Present' ? 'Main Academic Campus' : 'Outside Campus');
+        const parentPhone = document.getElementById('new-student-parent-phone').value.trim() || '+91 98765 00000';
+
+        if (!roll || !name || !dept) {
+          this.showToast('Please fill all required student details.', 'danger');
+          return;
+        }
+
+        const data = this.storage.getData();
+        // Check for duplicate roll
+        if (data.students.some(s => s.roll.toLowerCase() === roll.toLowerCase())) {
+          this.showToast(`Student with Roll No ${roll} already exists!`, 'danger');
+          return;
+        }
+
+        const now = new Date();
+        const timeStr = `Today at ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+        const newStudent = {
+          roll,
+          name,
+          dept,
+          status,
+          location,
+          lastGateTime: timeStr,
+          lastGateType: 'Admin Portal Entry',
+          attendancePct: 95.0,
+          hostel: location,
+          parentPhone
+        };
+
+        data.students.unshift(newStudent);
+        this.storage.saveData(data);
+
+        document.getElementById('form-add-student').reset();
+        this.showToast(`Student ${name} (${roll}) registered!`, 'success');
+        this.refreshData();
+        this.renderAdminStudents();
+      }
+
+      renderAdminStudents() {
+        const data = this.storage.getData();
+        const tbody = document.getElementById('admin-student-table-body');
+        if (!tbody) return;
+
+        // Metrics
+        const total = data.students.length;
+        const inside = data.students.filter(s => s.status === 'Present').length;
+        const outside = data.students.filter(s => s.status === 'Absent').length;
+
+        document.getElementById('admin-stat-enrolled').innerText = total;
+        document.getElementById('admin-stat-inside').innerText = inside;
+        document.getElementById('admin-stat-outside').innerText = outside;
+
+        // Filters
+        const searchQuery = (document.getElementById('admin-search-student')?.value || '').toLowerCase().trim();
+        const presenceFilter = document.getElementById('admin-filter-presence')?.value || 'ALL';
+
+        let list = data.students;
+
+        if (presenceFilter !== 'ALL') {
+          list = list.filter(s => s.status === presenceFilter);
+        }
+
+        if (searchQuery) {
+          list = list.filter(s => 
+            s.roll.toLowerCase().includes(searchQuery) ||
+            s.name.toLowerCase().includes(searchQuery) ||
+            s.dept.toLowerCase().includes(searchQuery)
+          );
+        }
+
+        if (list.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                No student records found matching filter criteria.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = list.map(s => {
+          const isPresent = s.status === 'Present';
+          const badgeClass = isPresent ? 'badge-present' : 'badge-absent';
+          const badgeText = isPresent ? '🟢 Inside Campus' : '🔴 Outside Campus';
+
+          return `
+            <tr>
+              <td><strong style="color: #93c5fd;">${this.escapeHtml(s.roll)}</strong></td>
+              <td><span style="font-weight: 600;">${this.escapeHtml(s.name)}</span></td>
+              <td style="color: var(--text-muted); font-size: 0.8rem;">${this.escapeHtml(s.dept)}</td>
+              <td>
+                <span class="badge ${badgeClass}">${badgeText}</span>
+              </td>
+              <td style="font-size: 0.8rem; color: var(--text-muted);">
+                ${s.lastGateTime || 'Today'}
+              </td>
+              <td style="font-size: 0.8rem;">
+                ${this.escapeHtml(s.location || '-')}
+              </td>
+              <td style="text-align: right; white-space: nowrap;">
+                <!-- 1-Click Status Toggle -->
+                <button class="btn btn-outline btn-sm" title="Quick toggle between Present and Absent" onclick="app.toggleStudentPresence('${s.roll}')">
+                  🔄 Toggle
+                </button>
+                <!-- Edit Student -->
+                <button class="btn btn-outline btn-sm" title="Edit Student Record" onclick="app.openEditStudentModal('${s.roll}')">
+                  ✏️ Edit
+                </button>
+                <!-- Delete Student -->
+                <button class="btn btn-danger btn-sm" title="Delete Student Record" onclick="app.confirmDelete('student', '${s.roll}', '${this.escapeHtml(s.name)} (${s.roll})')">
+                  🗑️ Delete
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      toggleStudentPresence(roll) {
+        const data = this.storage.getData();
+        const student = data.students.find(s => s.roll === roll);
+        if (!student) return;
+
+        const now = new Date();
+        const timeStr = `Today at ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+        if (student.status === 'Present') {
+          student.status = 'Absent';
+          student.location = 'Outside Campus (Exit Logged)';
+          student.lastGateTime = timeStr;
+          student.lastGateType = 'Gate Check-out';
+          this.showToast(`${student.name} marked ABSENT (Outside Campus)`, 'danger');
+        } else {
+          student.status = 'Present';
+          student.location = 'Academic Complex';
+          student.lastGateTime = timeStr;
+          student.lastGateType = 'Gate Check-in';
+          this.showToast(`${student.name} marked PRESENT (Inside Campus)`, 'success');
+        }
+
+        this.storage.saveData(data);
+        this.refreshData();
+        this.renderAdminStudents();
+      }
+
+      openEditStudentModal(roll) {
+        const data = this.storage.getData();
+        const student = data.students.find(s => s.roll === roll);
+        if (!student) return;
+
+        document.getElementById('edit-student-original-roll').value = student.roll;
+        document.getElementById('edit-student-roll').value = student.roll;
+        document.getElementById('edit-student-name').value = student.name;
+        document.getElementById('edit-student-dept').value = student.dept;
+        document.getElementById('edit-student-status').value = student.status;
+        document.getElementById('edit-student-location').value = student.location || '';
+
+        this.openModal('modal-edit-student');
+      }
+
+      handleSaveEditedStudent(e) {
+        e.preventDefault();
+        const origRoll = document.getElementById('edit-student-original-roll').value;
+        const newRoll = document.getElementById('edit-student-roll').value.trim().toUpperCase();
+        const name = document.getElementById('edit-student-name').value.trim();
+        const dept = document.getElementById('edit-student-dept').value.trim();
+        const status = document.getElementById('edit-student-status').value;
+        const location = document.getElementById('edit-student-location').value.trim();
+
+        const data = this.storage.getData();
+        const studentIndex = data.students.findIndex(s => s.roll === origRoll);
+        if (studentIndex === -1) return;
+
+        // Check roll conflict
+        if (origRoll !== newRoll && data.students.some(s => s.roll.toLowerCase() === newRoll.toLowerCase())) {
+          this.showToast(`Roll Number ${newRoll} is already taken!`, 'danger');
+          return;
+        }
+
+        data.students[studentIndex].roll = newRoll;
+        data.students[studentIndex].name = name;
+        data.students[studentIndex].dept = dept;
+        data.students[studentIndex].status = status;
+        data.students[studentIndex].location = location;
+
+        this.storage.saveData(data);
+        this.closeModal('modal-edit-student');
+        this.showToast(`Updated student ${name} (${newRoll})`, 'success');
+        this.refreshData();
+        this.renderAdminStudents();
+      }
+
+      /* ========================================================================
+         DELETION MODAL & LOGIC (Mandatory 🗑️ Delete Option)
+         ======================================================================== */
+      confirmDelete(type, id, label) {
+        this.deleteTarget = { type, id };
+        const textElem = document.getElementById('delete-confirm-text');
+        if (textElem) {
+          if (type === 'grievance') {
+            textElem.innerHTML = `Are you sure you want to permanently delete complaint ticket <strong>${this.escapeHtml(label)}</strong>?`;
+          } else {
+            textElem.innerHTML = `Are you sure you want to permanently remove student <strong>${this.escapeHtml(label)}</strong> from the database?`;
+          }
+        }
+        this.openModal('modal-delete-confirm');
+      }
+
+      executeDelete() {
+        if (!this.deleteTarget) return;
+        const { type, id } = this.deleteTarget;
+        const data = this.storage.getData();
+
+        if (type === 'grievance') {
+          data.grievances = data.grievances.filter(g => g.id !== id);
+          this.storage.saveData(data);
+          this.showToast(`Complaint ${id} removed permanently.`, 'success');
+          this.renderAdminGrievances();
+        } else if (type === 'student') {
+          data.students = data.students.filter(s => s.roll !== id);
+          this.storage.saveData(data);
+          this.showToast(`Student record ${id} deleted.`, 'success');
+          this.renderAdminStudents();
+        }
+
+        this.closeModal('modal-delete-confirm');
+        this.deleteTarget = null;
+        this.refreshData();
+      }
+
+      /* ========================================================================
+         MODAL & TOAST UTILITIES
+         ======================================================================== */
+      openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.classList.add('open');
+      }
+
+      closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.classList.remove('open');
+      }
+
+      showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+
+        let iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+        if (type === 'success') {
+          iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+        } else if (type === 'danger') {
+          iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+        }
+
+        toast.innerHTML = `${iconSvg} <span>${this.escapeHtml(message)}</span>`;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(-10px)';
+          toast.style.transition = 'all 0.3s ease';
+          setTimeout(() => toast.remove(), 300);
+        }, 3200);
+      }
+
+      indicateSyncing() {
+        const dot = document.getElementById('header-sync-dot');
+        const text = document.getElementById('header-sync-text');
+        if (!dot || !text) return;
+
+        dot.className = 'sync-dot syncing';
+        text.innerText = 'Syncing...';
+
+        setTimeout(() => {
+          dot.className = 'sync-dot';
+          text.innerText = 'Cloud Synced';
+        }, 600);
+      }
+
+      /* ========================================================================
+         CROSS-DEVICE & BACKUP / CLOUD MANAGER
+         ======================================================================== */
+      openSyncModal() {
+        this.openModal('modal-cloud-sync');
+      }
+
+      copySyncKey() {
+        const input = document.getElementById('sync-channel-key');
+        if (input) {
+          navigator.clipboard.writeText(input.value).then(() => {
+            this.showToast('Sync Key copied to clipboard!', 'success');
+          });
+        }
+      }
+
+      exportDatabase() {
+        const data = this.storage.getData();
+        const jsonStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `campus360_backup_${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        this.showToast('Backup JSON exported successfully!', 'success');
+      }
+
+      importDatabase(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const parsed = JSON.parse(e.target.result);
+            if (parsed && Array.isArray(parsed.students) && Array.isArray(parsed.grievances)) {
+              this.storage.saveData(parsed);
+              this.showToast('Database imported & restored successfully!', 'success');
+              this.refreshCurrentView();
+              this.closeModal('modal-cloud-sync');
+            } else {
+              this.showToast('Invalid backup file format.', 'danger');
+            }
+          } catch (err) {
+            this.showToast('Could not parse JSON file.', 'danger');
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      resetDemoData() {
+        if (confirm('Reset entire database to original demonstration seed data?')) {
+          const initial = {
+            students: INITIAL_STUDENTS,
+            grievances: INITIAL_GRIEVANCES,
+            lastSynced: new Date().toISOString()
+          };
+          this.storage.saveData(initial);
+          this.showToast('Database reset to fresh demo state.', 'success');
+          this.refreshCurrentView();
+          this.closeModal('modal-cloud-sync');
+        }
+      }
+
+      /* ========================================================================
+         PWA SERVICE WORKER & INSTALL PROMPT
+         ======================================================================== */
+      registerInlineServiceWorker() {
+        if ('serviceWorker' in navigator) {
+          const swCode = `
+            const CACHE_NAME = 'campus360-v1';
+            self.addEventListener('install', event => {
+              self.skipWaiting();
+            });
+            self.addEventListener('activate', event => {
+              event.waitUntil(clients.claim());
+            });
+            self.addEventListener('fetch', event => {
+              event.respondWith(
+                caches.match(event.request).then(cached => cached || fetch(event.request).catch(() => cached))
+              );
+            });
+          `;
+          try {
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl).catch(err => {
+              // Service worker registration from blob is subject to browser origin policies
+              console.log('SW blob registration notice:', err);
+            });
+          } catch (e) {
+            console.log('SW init:', e);
+          }
+        }
+      }
+
+      promptInstall() {
+        if (this.installPromptEvent) {
+          this.installPromptEvent.prompt();
+          this.installPromptEvent.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              this.showToast('Campus 360 installed successfully!', 'success');
+            }
+            this.installPromptEvent = null;
+            const pwaBtn = document.getElementById('btn-pwa-install');
+            if (pwaBtn) pwaBtn.style.display = 'none';
+          });
+        } else {
+          this.showToast('Use "Add to Home Screen" in your browser menu to install.', 'info');
+        }
+      }
+
+      escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+    }
+
+    // Global application initialization
+    const app = new Campus360App();
+    window.addEventListener('DOMContentLoaded', () => app.init());
+  </script>
+</body>
+</html>
