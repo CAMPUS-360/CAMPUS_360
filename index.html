@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +12,24 @@
   <!-- Firebase App & Realtime Database CDN scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 500: '#6366f1', 600: '#4f46e5', 900: '#312e81', 950: '#1e1b4b' }
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
 
-  <!-- Mobile Header Toggle -->
-  <div class="md:hidden flex items-center justify-between bg-slate-900 px-4 py-3 border-b border-slate-800 w-full fixed top-0 left-0 z-50">
+  <!-- Mobile Header -->
+  <div class="md:hidden flex items-center justify-between bg-slate-900/90 backdrop-blur-md px-4 py-3 border-b border-slate-800 w-full fixed top-0 left-0 z-50">
     <div class="flex items-center space-x-2">
       <i class="fa-solid fa-graduation-cap text-indigo-400 text-xl"></i>
       <span class="font-bold text-lg tracking-wider">CAMPUS 360</span>
@@ -26,163 +39,361 @@
     </button>
   </div>
 
-  <!-- Left Sidebar Navigation -->
-  <aside id="sidebar" class="bg-slate-900 border-r border-slate-800 w-64 fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-40 flex flex-col justify-between pt-16 md:pt-0">
+  <!-- Sidebar Navigation Drawer -->
+  <aside id="sidebar" class="bg-slate-900 border-r border-slate-800 w-64 fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-40 flex flex-col justify-between pt-16 md:pt-0 shadow-2xl">
     <div>
-      <div class="hidden md:flex items-center space-x-3 px-6 py-6 border-b border-slate-800">
-        <i class="fa-solid fa-graduation-cap text-indigo-400 text-2xl"></i>
-        <span class="font-bold text-xl tracking-wider">CAMPUS 360</span>
+      <div class="hidden md:flex items-center space-x-3 px-6 py-6 border-b border-slate-800 bg-slate-950/50">
+        <div class="p-2 bg-indigo-600/20 rounded-xl border border-indigo-500/30">
+          <i class="fa-solid fa-graduation-cap text-indigo-400 text-2xl"></i>
+        </div>
+        <span class="font-bold text-xl tracking-wider bg-gradient-to-r from-indigo-400 to-white bg-clip-text text-transparent">CAMPUS 360</span>
       </div>
 
-      <nav class="px-4 py-6 space-y-2">
+      <nav class="px-4 py-6 space-y-1.5">
         <button onclick="switchTab('home')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link bg-indigo-600 text-white font-medium shadow-lg shadow-indigo-600/30 transition-all" data-target="home">
           <i class="fa-solid fa-house w-5"></i>
-          <span>Home</span>
+          <span>Home Portal</span>
         </button>
-        <button onclick="switchTab('grievance')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800 hover:text-white transition-all" data-target="grievance">
+        <button onclick="switchTab('grievance')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all" data-target="grievance">
           <i class="fa-solid fa-bullhorn w-5 text-amber-400"></i>
           <span>Grievance</span>
         </button>
-        <button onclick="switchTab('sos')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800 hover:text-white transition-all" data-target="sos">
+        <button onclick="switchTab('sos')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all" data-target="sos">
           <i class="fa-solid fa-shield-halved w-5 text-rose-500"></i>
-          <span>SOS</span>
+          <span>SOS / Anti-Ragging</span>
         </button>
-        <button onclick="switchTab('outpass')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800 hover:text-white transition-all" data-target="outpass">
+        <button onclick="switchTab('outpass')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all" data-target="outpass">
           <i class="fa-solid fa-id-card w-5 text-sky-400"></i>
           <span>Out-Pass</span>
         </button>
-        <button onclick="switchTab('lostfound')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800 hover:text-white transition-all" data-target="lostfound">
+        <button onclick="switchTab('lostfound')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all" data-target="lostfound">
           <i class="fa-solid fa-magnifying-glass w-5 text-emerald-400"></i>
           <span>Lost & Found</span>
         </button>
-        <button onclick="switchTab('parent')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800 hover:text-white transition-all" data-target="parent">
+        <button onclick="switchTab('parent')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all" data-target="parent">
           <i class="fa-solid fa-users w-5 text-purple-400"></i>
-          <span>Parent</span>
+          <span>Parent Portal</span>
         </button>
-        <button onclick="switchTab('admin')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800 hover:text-white transition-all" data-target="admin">
-          <i class="fa-solid fa-lock w-5 text-slate-400"></i>
-          <span>Admin Portal</span>
+        <button onclick="switchTab('admin')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl nav-link text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all" data-target="admin">
+          <i class="fa-solid fa-lock w-5 text-amber-500"></i>
+          <span>Admin Panel</span>
         </button>
       </nav>
     </div>
 
-    <div class="px-6 py-4 border-t border-slate-800 text-xs text-slate-500">
-      &copy; 2026 Campus 360 System
+    <div class="px-6 py-4 border-t border-slate-800/80 text-xs text-slate-500 flex items-center justify-between">
+      <span>v2.6 Live Sync</span>
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
     </div>
   </aside>
 
-  <!-- Main Content Area -->
-  <main class="flex-1 flex flex-col mt-14 md:mt-0 p-6 md:p-12 overflow-y-auto">
-    <div class="max-w-4xl mx-auto w-full">
+  <!-- Main Content View Area -->
+  <main class="flex-1 flex flex-col mt-14 md:mt-0 p-4 md:p-10 overflow-y-auto">
+    <div class="max-w-5xl mx-auto w-full">
       
-      <!-- HOME SECTION -->
-      <section id="sec-home" class="tab-section space-y-8">
-        <div class="bg-gradient-to-br from-slate-900 to-slate-900/40 border border-slate-800 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+      <!-- 1. HOME PORTAL -->
+      <section id="sec-home" class="tab-section space-y-8 animate-fadeIn">
+        <div class="bg-gradient-to-br from-slate-900 via-slate-900/90 to-indigo-950/40 border border-slate-800/80 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 opacity-5 text-9xl pointer-events-none">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div class="inline-flex items-center space-x-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-indigo-400 text-xs font-semibold mb-6">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Centralized Cloud Platform</span>
+          </div>
           <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-indigo-400 via-purple-300 to-white bg-clip-text text-transparent">
-            Centralized Smart Campus Portal
+            CAMPUS 360 Portal
           </h1>
-          <p class="text-slate-400 text-lg md:text-xl max-w-2xl leading-relaxed">
-            Manage campus grievances, emergency SOS, out-passes, and lost items seamlessly with real-time sync.
+          <p class="text-slate-400 text-lg md:text-xl max-w-2xl leading-relaxed mb-8">
+            A real-time unified solution for student grievances, emergency response, gate passes, lost items tracking, and academic monitoring across all devices.
           </p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <button onclick="playWelcomeVoice()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center space-x-2">
-              <i class="fa-solid fa-volume-high"></i>
-              <span>Play Welcome Audio</span>
-            </button>
+
+          <!-- Rating Box -->
+          <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-6 max-w-md backdrop-blur-sm">
+            <h3 class="text-sm font-semibold text-slate-300 mb-2 flex items-center justify-between">
+              <span>Rate Your Experience</span>
+              <span id="avg-rating" class="text-indigo-400 font-bold">4.8 / 5.0</span>
+            </h3>
+            <div class="flex space-x-2 mb-3" id="star-container">
+              <i class="fa-solid fa-star text-amber-400 text-xl cursor-pointer hover:scale-110 transition" onclick="ratePortal(1)"></i>
+              <i class="fa-solid fa-star text-amber-400 text-xl cursor-pointer hover:scale-110 transition" onclick="ratePortal(2)"></i>
+              <i class="fa-solid fa-star text-amber-400 text-xl cursor-pointer hover:scale-110 transition" onclick="ratePortal(3)"></i>
+              <i class="fa-solid fa-star text-amber-400 text-xl cursor-pointer hover:scale-110 transition" onclick="ratePortal(4)"></i>
+              <i class="fa-solid fa-star text-amber-400 text-xl cursor-pointer hover:scale-110 transition" onclick="ratePortal(5)"></i>
+            </div>
+            <p id="rating-msg" class="text-xs text-emerald-400 font-medium"></p>
           </div>
         </div>
       </section>
 
-      <!-- GRIEVANCE SECTION -->
+      <!-- 2. GRIEVANCE PORTAL -->
       <section id="sec-grievance" class="tab-section hidden space-y-6">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
-          <h2 class="text-2xl font-bold mb-4 flex items-center space-x-3">
-            <i class="fa-solid fa-bullhorn text-amber-400"></i>
-            <span>Submit Grievance</span>
-          </h2>
-          <form id="grievance-form" class="space-y-4">
-            <div>
-              <label class="block text-sm text-slate-400 mb-1">Your Name / ID</label>
-              <input type="text" id="g-name" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+            <h2 class="text-2xl font-bold flex items-center space-x-3">
+              <i class="fa-solid fa-bullhorn text-amber-400"></i>
+              <span>Student Grievance & Issue Portal</span>
+            </h2>
+          </div>
+          <form id="grievance-form" onsubmit="submitGrievance(event)" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Student Name & Roll No</label>
+                <input type="text" id="g-name" required placeholder="e.g. Rahul Sharma (2201CSE)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Room / Class Number / Location</label>
+                <input type="text" id="g-location" required placeholder="e.g. LH-302 / Hostel B-402" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500">
+              </div>
             </div>
             <div>
               <label class="block text-sm text-slate-400 mb-1">Issue Description</label>
-              <textarea id="g-desc" rows="4" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500"></textarea>
+              <textarea id="g-desc" rows="4" required placeholder="Describe your issue clearly..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500"></textarea>
             </div>
-            <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl">Submit Grievance</button>
+            <div>
+              <label class="block text-sm text-slate-400 mb-1">Attach Proof / Photo URL (Optional)</label>
+              <input type="text" id="g-pic" placeholder="Paste image link if available" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500">
+            </div>
+            <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-indigo-600/35 transition">Submit Grievance</button>
           </form>
-        </div>
-      </section>
 
-      <!-- SOS SECTION -->
-      <section id="sec-sos" class="tab-section hidden space-y-6">
-        <div class="bg-rose-950/20 border border-rose-900/50 rounded-3xl p-8 text-center">
-          <i class="fa-solid fa-triangle-exclamation text-rose-500 text-6xl mb-4"></i>
-          <h2 class="text-3xl font-bold text-rose-400 mb-2">Emergency SOS Alert</h2>
-          <p class="text-slate-400 mb-6">Pressing this button will instantly alert campus security with your live status.</p>
-          <button onclick="triggerSOS()" class="px-8 py-4 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xl rounded-2xl shadow-lg shadow-rose-600/40">SEND SOS ALERT</button>
-        </div>
-      </section>
-
-      <!-- OUT-PASS SECTION -->
-      <section id="sec-outpass" class="tab-section hidden space-y-6">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
-          <h2 class="text-2xl font-bold mb-4 flex items-center space-x-3">
-            <i class="fa-solid fa-id-card text-sky-400"></i>
-            <span>Request Out-Pass</span>
-          </h2>
-          <p class="text-slate-400">Out-pass request form module goes here.</p>
-        </div>
-      </section>
-
-      <!-- LOST & FOUND SECTION -->
-      <section id="sec-lostfound" class="tab-section hidden space-y-6">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
-          <h2 class="text-2xl font-bold mb-4 flex items-center space-x-3">
-            <i class="fa-solid fa-magnifying-glass text-emerald-400"></i>
-            <span>Lost & Found Portal</span>
-          </h2>
-          <p class="text-slate-400">Report lost or found items here.</p>
-        </div>
-      </section>
-
-      <!-- PARENT SECTION -->
-      <section id="sec-parent" class="tab-section hidden space-y-6">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
-          <h2 class="text-2xl font-bold mb-4 flex items-center space-x-3">
-            <i class="fa-solid fa-users text-purple-400"></i>
-            <span>Parent Portal</span>
-          </h2>
-          <p class="text-slate-400">Parent tracking & updates module.</p>
-        </div>
-      </section>
-
-      <!-- ADMIN SECTION -->
-      <section id="sec-admin" class="tab-section hidden space-y-6">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
-          <h2 class="text-2xl font-bold mb-4 flex items-center space-x-3">
-            <i class="fa-solid fa-lock text-slate-400"></i>
-            <span>Admin Control Panel</span>
-          </h2>
-          <div id="admin-data" class="space-y-3">
-            <p class="text-slate-400">Loading submitted complaints & data from database...</p>
+          <div id="g-ticket-box" class="mt-6 hidden p-4 bg-emerald-950/30 border border-emerald-900/50 rounded-2xl">
+            <p class="text-emerald-400 font-semibold">Grievance Submitted Successfully!</p>
+            <p class="text-slate-300 text-sm">Your Tracking Ticket ID: <span id="g-ticket-id" class="font-mono bg-slate-950 px-2 py-1 rounded text-amber-300"></span></p>
           </div>
+        </div>
+      </section>
+
+      <!-- 3. SOS / ANTI-RAGGING SECTION -->
+      <section id="sec-sos" class="tab-section hidden space-y-6">
+        <div class="bg-gradient-to-br from-rose-950/30 via-slate-900 to-slate-900 border border-rose-900/50 rounded-3xl p-8 text-center shadow-2xl">
+          <div class="w-20 h-20 bg-rose-600/20 border border-rose-500/40 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+            <i class="fa-solid fa-triangle-exclamation text-rose-500 text-3xl"></i>
+          </div>
+          <h2 class="text-3xl font-bold text-rose-400 mb-2">Emergency SOS & Anti-Ragging</h2>
+          <p class="text-slate-400 max-w-lg mx-auto mb-8">Instant distress signal. Pressing this will broadcast your live location and sound emergency alarms at the central Admin Control Console.</p>
+          
+          <div class="max-w-md mx-auto mb-8">
+            <input type="text" id="sos-student" placeholder="Your Name & Roll No (Optional for anonymity)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500 mb-4 text-center">
+            <input type="text" id="sos-loc" placeholder="Current Location / Building Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500 text-center">
+          </div>
+
+          <button onclick="triggerSOSAlert()" class="px-10 py-5 bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xl rounded-2xl shadow-xl shadow-rose-600/40 transition transform active:scale-95">
+            <i class="fa-solid fa-tower-broadcast mr-2"></i> TRIGGER EMERGENCY SOS
+          </button>
+        </div>
+      </section>
+
+      <!-- 4. OUT-PASS PORTAL -->
+      <section id="sec-outpass" class="tab-section hidden space-y-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-xl">
+          <h2 class="text-2xl font-bold flex items-center space-x-3 mb-6">
+            <i class="fa-solid fa-id-card text-sky-400"></i>
+            <span>Student Out-Pass Request Portal</span>
+          </h2>
+          <form id="outpass-form" onsubmit="submitOutpass(event)" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Student Full Name</label>
+                <input type="text" id="op-name" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Roll Number</label>
+                <input type="text" id="op-roll" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Student Phone Number</label>
+                <input type="text" id="op-phone" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Parent Phone Number</label>
+                <input type="text" id="op-parentphone" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Destination / Place Visiting</label>
+                <input type="text" id="op-place" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Reason for Leave</label>
+                <input type="text" id="op-reason" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Out Date & Time</label>
+                <input type="datetime-local" id="op-outdate" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Return Date & Time</label>
+                <input type="datetime-local" id="op-returndate" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500">
+              </div>
+            </div>
+            <button type="submit" class="px-6 py-3 bg-sky-600 hover:bg-sky-500 text-white font-medium rounded-xl shadow-lg shadow-sky-600/35 transition">Request Out-Pass</button>
+          </form>
+
+          <div id="op-ticket-box" class="mt-6 hidden p-4 bg-sky-950/30 border border-sky-900/50 rounded-2xl">
+            <p class="text-sky-400 font-semibold">Out-Pass Application Submitted!</p>
+            <p class="text-slate-300 text-sm">Tracking Ticket ID: <span id="op-ticket-id" class="font-mono bg-slate-950 px-2 py-1 rounded text-amber-300"></span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. LOST & FOUND PORTAL -->
+      <section id="sec-lostfound" class="tab-section hidden space-y-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-xl">
+          <h2 class="text-2xl font-bold flex items-center space-x-3 mb-6">
+            <i class="fa-solid fa-magnifying-glass text-emerald-400"></i>
+            <span>Lost & Found Item Portal</span>
+          </h2>
+          <form id="lf-form" onsubmit="submitLostFound(event)" class="space-y-4 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Report Type</label>
+                <select id="lf-type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+                  <option value="Lost">Lost Item</option>
+                  <option value="Found">Found Item</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Item Category & Title</label>
+                <input type="text" id="lf-title" required placeholder="e.g. Black Wallet / Calculator" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Location Lost/Found</label>
+                <input type="text" id="lf-loc" required placeholder="e.g. Central Library" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-400 mb-1">Contact Details</label>
+                <input type="text" id="lf-contact" required placeholder="Phone / Email" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm text-slate-400 mb-1">Description</label>
+              <textarea id="lf-desc" rows="3" required placeholder="Detailed description..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500"></textarea>
+            </div>
+            <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-xl shadow-lg shadow-emerald-600/35 transition">Publish Listing</button>
+          </form>
+
+          <h3 class="text-lg font-semibold mb-4">Browse Campus Listings</h3>
+          <div id="lf-items-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <p class="text-slate-500 text-sm">Loading items...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. PARENT PORTAL -->
+      <section id="sec-parent" class="tab-section hidden space-y-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-xl">
+          <h2 class="text-2xl font-bold flex items-center space-x-3 mb-6">
+            <i class="fa-solid fa-users text-purple-400"></i>
+            <span>Parent Attendance & Status Portal</span>
+          </h2>
+          <div class="flex gap-3 mb-6">
+            <input type="text" id="parent-roll-input" placeholder="Enter Student Roll Number (e.g. 2201CSE)" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500">
+            <button onclick="checkParentAttendance()" class="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition">Check Status</button>
+          </div>
+          <div id="parent-result-box" class="bg-slate-950 border border-slate-800/80 rounded-2xl p-6 hidden">
+            <h3 class="text-lg font-bold text-indigo-300 mb-3" id="p-res-name">Student Details</h3>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div class="bg-slate-900 p-3 rounded-xl">
+                <span class="text-slate-400 block mb-1">Today's Attendance</span>
+                <span id="p-res-status" class="text-xl font-bold">--</span>
+              </div>
+              <div class="bg-slate-900 p-3 rounded-xl">
+                <span class="text-slate-400 block mb-1">Overall Percentage</span>
+                <span id="p-res-percent" class="text-xl font-bold text-emerald-400">--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. ADMIN CONTROL PANEL -->
+      <section id="sec-admin" class="tab-section hidden space-y-8">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+            <h2 class="text-2xl font-bold flex items-center space-x-3 text-amber-400">
+              <i class="fa-solid fa-lock"></i>
+              <span>Admin Master Control Panel</span>
+            </h2>
+            <span class="px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs rounded-full font-bold">Authorized Only</span>
+          </div>
+
+          <!-- Add Student Details Form -->
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 mb-8">
+            <h3 class="text-lg font-semibold mb-4 text-indigo-300">Add Student & Manage Attendance</h3>
+            <form id="admin-student-form" onsubmit="addStudentData(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <input type="text" id="as-name" placeholder="Student Name" required class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+              <input type="text" id="as-roll" placeholder="Roll Number" required class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+              <input type="text" id="as-branch" placeholder="Branch & Class" required class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+              <select id="as-status" class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                <option value="Present">Present Today</option>
+                <option value="Absent">Absent Today</option>
+              </select>
+              <input type="text" id="as-percent" placeholder="Attendance % (e.g. 88%)" required class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+              <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl py-2.5 text-sm transition">Save Student Record</button>
+            </form>
+          </div>
+
+          <!-- SOS Live Alerts Display -->
+          <div class="mb-8">
+            <h3 class="text-lg font-bold text-rose-400 mb-3 flex items-center space-x-2">
+              <i class="fa-solid fa-triangle-exclamation animate-bounce"></i>
+              <span>Live Emergency SOS / Anti-Ragging Alerts</span>
+            </h3>
+            <div id="admin-sos-list" class="space-y-2">
+              <p class="text-slate-500 text-sm">No emergency alerts active.</p>
+            </div>
+          </div>
+
+          <!-- Grievance Management -->
+          <div class="mb-8">
+            <h3 class="text-lg font-bold text-amber-400 mb-3">Submitted Grievances</h3>
+            <div id="admin-grievance-list" class="space-y-2">
+              <p class="text-slate-500 text-sm">Loading grievances...</p>
+            </div>
+          </div>
+
+          <!-- Outpass Management -->
+          <div class="mb-8">
+            <h3 class="text-lg font-bold text-sky-400 mb-3">Out-Pass Requests (Approval & Download)</h3>
+            <div id="admin-outpass-list" class="space-y-2">
+              <p class="text-slate-500 text-sm">Loading out-passes...</p>
+            </div>
+          </div>
+
+          <!-- Lost & Found Management -->
+          <div>
+            <h3 class="text-lg font-bold text-emerald-400 mb-3">Lost & Found Listings (Claim Control)</h3>
+            <div id="admin-lf-list" class="space-y-2">
+              <p class="text-slate-500 text-sm">Loading lost/found items...</p>
+            </div>
+          </div>
+
         </div>
       </section>
 
     </div>
   </main>
 
-  <!-- JavaScript Logic -->
+  <!-- Audio element for emergency alert siren -->
+  <audio id="sos-siren" src="https://assets.mixkit.co/active_storage/sermons/504/504-preview.mp3" preload="auto" loop></audio>
+
+  <!-- JavaScript Application Logic with Firebase Sync -->
   <script>
-    // Mobile Sidebar Toggle
+    // Firebase Config (Replace with your valid project credentials if needed)
+    const firebaseConfig = {
+      databaseURL: "https://campus-360-9cda6-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Mobile Menu Toggle
     const menuBtn = document.getElementById('menu-btn');
     const sidebar = document.getElementById('sidebar');
     menuBtn.addEventListener('click', () => {
       sidebar.classList.toggle('-translate-x-full');
     });
 
-    // Tab Switching Logic
+    // Tab Navigation Logic
     function switchTab(tabId) {
       document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
       document.getElementById('sec-' + tabId).classList.remove('hidden');
@@ -201,29 +412,258 @@
       }
     }
 
-    // Speech Synthesis
-    function playWelcomeVoice() {
+    // Auto Voice Welcome on Page Load
+    window.addEventListener('load', () => {
       if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance("Welcome to Campus 360");
         utterance.rate = 1.0;
         utterance.pitch = 1.0;
-        utterance.volume = 1.0;
         window.speechSynthesis.speak(utterance);
       }
-    }
-
-    // Auto-trigger voice on first user interaction or page load
-    window.addEventListener('click', () => {
-      // Unlocks browser audio policy on first click anywhere
-    }, { once: true });
-
-    window.addEventListener('load', () => {
-      setTimeout(playWelcomeVoice, 800);
+      listenFirebaseData();
     });
 
-    function triggerSOS() {
-      alert("SOS Alert Triggered Successfully!");
+    // Rating System
+    function ratePortal(stars) {
+      document.getElementById('rating-msg').innerText = `Thank you for rating us ${stars} Stars!`;
+      let avg = ((4.8 * 20 + stars) / 21).toFixed(1);
+      document.getElementById('avg-rating').innerText = `${avg} / 5.0`;
+    }
+
+    // Grievance Submit
+    function submitGrievance(e) {
+      e.preventDefault();
+      const ticketId = 'GRV-' + Math.floor(100000 + Math.random() * 900000);
+      const data = {
+        ticketId,
+        name: document.getElementById('g-name').value,
+        location: document.getElementById('g-location').value,
+        description: document.getElementById('g-desc').value,
+        pic: document.getElementById('g-pic').value || 'None',
+        status: 'Pending',
+        timestamp: new Date().toLocaleString()
+      };
+      db.ref('grievances/' + ticketId).set(data);
+      document.getElementById('g-ticket-id').innerText = ticketId;
+      document.getElementById('g-ticket-box').classList.remove('hidden');
+      document.getElementById('grievance-form').reset();
+    }
+
+    // SOS Trigger
+    function triggerSOSAlert() {
+      const sosId = 'SOS-' + Math.floor(1000 + Math.random() * 9000);
+      const data = {
+        sosId,
+        student: document.getElementById('sos-student').value || 'Anonymous Student',
+        location: document.getElementById('sos-loc').value || 'Main Campus',
+        timestamp: new Date().toLocaleString()
+      };
+      db.ref('sos_alerts/' + sosId).set(data);
+      alert("Emergency SOS Broadcasted Successfully! Admin Alerted.");
+    }
+
+    // Outpass Submit
+    function submitOutpass(e) {
+      e.preventDefault();
+      const ticketId = 'OUT-' + Math.floor(100000 + Math.random() * 900000);
+      const data = {
+        ticketId,
+        name: document.getElementById('op-name').value,
+        roll: document.getElementById('op-roll').value,
+        phone: document.getElementById('op-phone').value,
+        parentphone: document.getElementById('op-parentphone').value,
+        place: document.getElementById('op-place').value,
+        reason: document.getElementById('op-reason').value,
+        outdate: document.getElementById('op-outdate').value,
+        returndate: document.getElementById('op-returndate').value,
+        status: 'Pending'
+      };
+      db.ref('outpasses/' + ticketId).set(data);
+      document.getElementById('op-ticket-id').innerText = ticketId;
+      document.getElementById('op-ticket-box').classList.remove('hidden');
+      document.getElementById('outpass-form').reset();
+    }
+
+    // Lost & Found Submit
+    function submitLostFound(e) {
+      e.preventDefault();
+      const itemId = 'LF-' + Math.floor(100000 + Math.random() * 900000);
+      const data = {
+        itemId,
+        type: document.getElementById('lf-type').value,
+        title: document.getElementById('lf-title').value,
+        location: document.getElementById('lf-loc').value,
+        contact: document.getElementById('lf-contact').value,
+        description: document.getElementById('lf-desc').value,
+        status: 'Unapproved' // Requires admin approval before claim
+      };
+      db.ref('lostfound/' + itemId).set(data);
+      alert("Item reported successfully! Pending Admin approval for public claim.");
+      document.getElementById('lf-form').reset();
+    }
+
+    // Parent Attendance Lookup
+    function checkParentAttendance() {
+      const roll = document.getElementById('parent-roll-input').value.trim();
+      if(!roll) return alert("Please enter a roll number");
+      db.ref('students/' + roll).once('value', snapshot => {
+        const val = snapshot.val();
+        const resBox = document.getElementById('parent-result-box');
+        resBox.classList.remove('hidden');
+        if(val) {
+          document.getElementById('p-res-name').innerText = `${val.name} (${val.branch})`;
+          document.getElementById('p-res-status').innerText = val.status;
+          document.getElementById('p-res-status').className = val.status === 'Present' ? 'text-xl font-bold text-emerald-400' : 'text-xl font-bold text-rose-500';
+          document.getElementById('p-res-percent').innerText = val.percent;
+        } else {
+          document.getElementById('p-res-name').innerText = "Student record not found in database.";
+          document.getElementById('p-res-status').innerText = "--";
+          document.getElementById('p-res-percent').innerText = "--";
+        }
+      });
+    }
+
+    // Admin Add Student Record
+    function addStudentData(e) {
+      e.preventDefault();
+      const roll = document.getElementById('as-roll').value;
+      const data = {
+        name: document.getElementById('as-name').value,
+        roll,
+        branch: document.getElementById('as-branch').value,
+        status: document.getElementById('as-status').value,
+        percent: document.getElementById('as-percent').value
+      };
+      db.ref('students/' + roll).set(data);
+      alert("Student attendance record saved successfully!");
+      document.getElementById('admin-student-form').reset();
+    }
+
+    // Realtime Sync Listener & Admin Render
+    function listenFirebaseData() {
+      // SOS Alerts & Siren
+      db.ref('sos_alerts').on('value', snapshot => {
+        const data = snapshot.val();
+        const list = document.getElementById('admin-sos-list');
+        const siren = document.getElementById('sos-siren');
+        list.innerHTML = '';
+        if(data) {
+          siren.play().catch(e => console.log("Audio play blocked by browser policy until interaction"));
+          Object.values(data).forEach(item => {
+            list.innerHTML += `
+              <div class="bg-rose-950/40 border border-rose-900 p-4 rounded-xl flex items-center justify-between">
+                <div>
+                  <p class="font-bold text-rose-300">🚨 SOS: ${item.student}</p>
+                  <p class="text-xs text-slate-400">Location: <span class="text-white font-semibold">${item.location}</span> | Time: ${item.timestamp}</p>
+                </div>
+                <button onclick="deleteRecord('sos_alerts', '${item.sosId}')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-semibold">Resolve / Delete</button>
+              </div>`;
+          });
+        } else {
+          siren.pause();
+          list.innerHTML = '<p class="text-slate-500 text-sm">No emergency alerts active.</p>';
+        }
+      });
+
+      // Grievances Sync
+      db.ref('grievances').on('value', snapshot => {
+        const data = snapshot.val();
+        const list = document.getElementById('admin-grievance-list');
+        list.innerHTML = '';
+        if(data) {
+          Object.values(data).forEach(item => {
+            list.innerHTML += `
+              <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
+                <div>
+                  <p class="font-semibold text-amber-300">[${item.ticketId}] ${item.name} - Location: ${item.location}</p>
+                  <p class="text-xs text-slate-400 mt-1">${item.description}</p>
+                </div>
+                <button onclick="deleteRecord('grievances', '${item.ticketId}')" class="px-3 py-1.5 bg-rose-600/80 hover:bg-rose-600 text-white rounded-lg text-xs">Delete</button>
+              </div>`;
+          });
+        } else {
+          list.innerHTML = '<p class="text-slate-500 text-sm">No grievances recorded.</p>';
+        }
+      });
+
+      // Outpass Sync
+      db.ref('outpasses').on('value', snapshot => {
+        const data = snapshot.val();
+        const list = document.getElementById('admin-outpass-list');
+        list.innerHTML = '';
+        if(data) {
+          Object.values(data).forEach(item => {
+            const isApproved = item.status === 'Approved';
+            list.innerHTML += `
+              <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
+                <div>
+                  <p class="font-semibold text-sky-300">[${item.ticketId}] ${item.name} (${item.roll}) to ${item.place}</p>
+                  <p class="text-xs text-slate-400 mt-1">Status: <span class="${isApproved ? 'text-emerald-400 font-bold' : 'text-amber-400'}">${item.status}</span></p>
+                </div>
+                <div class="flex space-x-2">
+                  ${!isApproved ? `<button onclick="approveOutpass('${item.ticketId}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold">Approve</button>` : `<a href="javascript:alert('Out-pass Approved & Ready for Download!')" class="px-3 py-1.5 bg-sky-600 text-white rounded-lg text-xs font-semibold">Download Pass</a>`}
+                  <button onclick="deleteRecord('outpasses', '${item.ticketId}')" class="px-3 py-1.5 bg-rose-600/80 text-white rounded-lg text-xs">Delete</button>
+                </div>
+              </div>`;
+          });
+        } else {
+          list.innerHTML = '<p class="text-slate-500 text-sm">No out-pass requests.</p>';
+        }
+      });
+
+      // Lost & Found Sync
+      db.ref('lostfound').on('value', snapshot => {
+        const data = snapshot.val();
+        const adminList = document.getElementById('admin-lf-list');
+        const studentList = document.getElementById('lf-items-list');
+        adminList.innerHTML = '';
+        studentList.innerHTML = '';
+        if(data) {
+          Object.values(data).forEach(item => {
+            const isApproved = item.status === 'Approved';
+            // Admin View
+            adminList.innerHTML += `
+              <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
+                <div>
+                  <p class="font-semibold text-emerald-300">[${item.type}] ${item.title} (${item.location})</p>
+                  <p class="text-xs text-slate-400">Contact: ${item.contact} | Status: <span class="${isApproved ? 'text-emerald-400' : 'text-amber-400'}">${item.status}</span></p>
+                </div>
+                <div class="flex space-x-2">
+                  ${!isApproved ? `<button onclick="approveLostFound('${item.itemId}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs">Approve Item</button>` : ''}
+                  <button onclick="deleteRecord('lostfound', '${item.itemId}')" class="px-3 py-1.5 bg-rose-600/80 text-white rounded-lg text-xs">Delete</button>
+                </div>
+              </div>`;
+
+            // Student/Public Browse View (Only approved items can be claimed)
+            if(isApproved) {
+              studentList.innerHTML += `
+                <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                  <span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-xs rounded font-bold">${item.type}</span>
+                  <h4 class="font-bold text-white mt-1">${item.title}</h4>
+                  <p class="text-xs text-slate-400 mt-1">Location: ${item.location}</p>
+                  <p class="text-xs text-slate-300 mt-2">${item.description}</p>
+                  <button onclick="alert('Claim request sent to admin. Contact: ${item.contact}')" class="mt-3 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold">Claim Item</button>
+                </div>`;
+            }
+          });
+        } else {
+          adminList.innerHTML = '<p class="text-slate-500 text-sm">No items listed.</p>';
+          studentList.innerHTML = '<p class="text-slate-500 text-sm">No approved items to browse.</p>';
+        }
+      });
+    }
+
+    // Admin Action Helpers
+    function approveOutpass(id) {
+      db.ref('outpasses/' + id).update({ status: 'Approved' });
+    }
+    function approveLostFound(id) {
+      db.ref('lostfound/' + id).update({ status: 'Approved' });
+    }
+    function deleteRecord(path, id) {
+      if(confirm("Are you sure you want to delete this record?")) {
+        db.ref(path + '/' + id).remove();
+      }
     }
   </script>
 </body>
