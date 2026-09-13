@@ -184,7 +184,7 @@
             <button onclick="switchTab('outpass')" id="nav-outpass"><i class="fa-solid fa-ticket"></i> Out-Pass</button>
             <button onclick="switchTab('lostfound')" id="nav-lostfound"><i class="fa-solid fa-magnifying-glass"></i> Lost & Found</button>
             <button onclick="switchTab('parent')" id="nav-parent"><i class="fa-solid fa-user-group"></i> Parent</button>
-            <button onclick="switchTab('admin')" id="nav-admin"><i class="fa-solid fa-sliders"></i> Admin</button>
+            <button onclick="switchTab('admin')" id="nav-admin"><i class="fa-solid fa-lock"></i> Admin</button>
         </nav>
     </header>
 
@@ -391,10 +391,27 @@
             </div>
         </section>
 
-        <!-- 7. ADMIN DASHBOARD -->
+        <!-- 7. ADMIN DASHBOARD WITH PASSWORD AUTH -->
         <section id="view-admin" class="section">
-            <div class="card">
-                <h2><i class="fa-solid fa-user-shield" style="color: #f43f5e;"></i> Admin Dashboard Console</h2>
+
+            <!-- ADMIN LOGIN CARD (Shown if locked) -->
+            <div id="admin-login-card" class="card" style="max-width:450px; margin: 40px auto; text-align: center;">
+                <h2><i class="fa-solid fa-lock" style="color: var(--danger);"></i> Admin Authentication</h2>
+                <p style="color: var(--text-muted); margin-bottom: 15px;">Enter Master Security Password to access Admin Portal Console.</p>
+                <input type="password" id="admin-password-input" placeholder="Enter Password" style="text-align:center; font-size:1.1rem;">
+                <button onclick="loginAdmin()" class="btn" style="background: linear-gradient(135deg, #f43f5e, #be123c); margin-top:15px;">
+                    <i class="fa-solid fa-key"></i> Unlock Dashboard
+                </button>
+                <div id="admin-login-msg" style="margin-top:12px;"></div>
+            </div>
+
+            <!-- ADMIN CONTROL CENTER (Shown if authenticated) -->
+            <div id="admin-dashboard-content" class="card" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                    <h2 style="margin:0;"><i class="fa-solid fa-user-shield" style="color: #f43f5e;"></i> Admin Dashboard Console</h2>
+                    <button onclick="logoutAdmin()" class="btn btn-danger" style="width:auto; margin:0;"><i class="fa-solid fa-right-from-bracket"></i> Lock Console</button>
+                </div>
+
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
                     <button onclick="switchAdminSubTab('sos')" class="btn" style="background:var(--danger); flex:1;"><i class="fa-solid fa-bell"></i> SOS (<span id="count-sos">0</span>)</button>
                     <button onclick="switchAdminSubTab('grievance')" class="btn" style="flex:1;"><i class="fa-solid fa-bullhorn"></i> Grievances</button>
@@ -453,6 +470,8 @@
 
     <!-- SHARED DATA ENGINE -->
     <script>
+        let isAdminLoggedIn = false;
+
         let store = {
             grievances: JSON.parse(localStorage.getItem('c360_g') || '[]'),
             sos: JSON.parse(localStorage.getItem('c360_sos') || '[]'),
@@ -483,7 +502,34 @@
             document.getElementById('nav-' + tab).classList.add('active');
 
             if(tab === 'lostfound') renderPublicLostFound();
-            if(tab === 'admin') renderAdminDashboard();
+            if(tab === 'admin') {
+                if(isAdminLoggedIn) {
+                    renderAdminDashboard();
+                } else {
+                    document.getElementById('admin-login-card').style.display = 'block';
+                    document.getElementById('admin-dashboard-content').style.display = 'none';
+                }
+            }
+        }
+
+        function loginAdmin() {
+            const pwd = document.getElementById('admin-password-input').value;
+            if(pwd === "Ujjjwal123") {
+                isAdminLoggedIn = true;
+                document.getElementById('admin-login-card').style.display = 'none';
+                document.getElementById('admin-dashboard-content').style.display = 'block';
+                document.getElementById('admin-password-input').value = "";
+                document.getElementById('admin-login-msg').innerHTML = "";
+                renderAdminDashboard();
+            } else {
+                document.getElementById('admin-login-msg').innerHTML = `<p style="color:var(--danger); font-weight:700;">❌ Incorrect Password!</p>`;
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            document.getElementById('admin-login-card').style.display = 'block';
+            document.getElementById('admin-dashboard-content').style.display = 'none';
         }
 
         function updateRatingsUI() {
@@ -681,7 +727,6 @@
                 document.getElementById('adm-' + t + '-view').style.display = (t === sub) ? 'block' : 'none';
             });
         }
-        function switchAdminTabOutpass() { switchAdminSubTab('outpass'); }
 
         function renderAdminDashboard() {
             document.getElementById('count-sos').innerText = store.sos.length;
