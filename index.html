@@ -9,6 +9,10 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
     <style>
         :root {
             --bg-base: #060913;
@@ -468,26 +472,55 @@
 
     </div>
 
-    <!-- SHARED DATA ENGINE -->
+    <!-- FIREBASE & APP LOGIC ENGINE -->
     <script>
-        let isAdminLoggedIn = false;
-
-        let store = {
-            grievances: JSON.parse(localStorage.getItem('c360_g') || '[]'),
-            sos: JSON.parse(localStorage.getItem('c360_sos') || '[]'),
-            outpass: JSON.parse(localStorage.getItem('c360_op') || '[]'),
-            lostfound: JSON.parse(localStorage.getItem('c360_lf') || '[]'),
-            students: JSON.parse(localStorage.getItem('c360_st') || '[{"name":"Rahul Kumar","roll":"101","branch":"CSE","class":"3rd Year","status":"Present","pct":88}]'),
-            ratings: JSON.parse(localStorage.getItem('c360_rt') || '[5, 5, 4]')
+        // Firebase Configuration Setup
+        const firebaseConfig = {
+            apiKey: "AIzaSyAunO0aVw0luITnnDY9G7Fjqz_RPjVh54g",
+            authDomain: "campus-360-9cda6.firebaseapp.com",
+            databaseURL: "https://campus-360-9cda6-default-rtdb.firebaseio.com/",
+            projectId: "campus-360-9cda6",
+            storageBucket: "campus-360-9cda6.firebasestorage.app",
+            messagingSenderId: "224318982246",
+            appId: "1:224318982246:web:542fcf14db66241302c5a7",
+            measurementId: "G-CBXJH5NH0E"
         };
 
+        // Initialize Firebase Database
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let isAdminLoggedIn = false;
+
+        // Central Store Object synced with Firebase Realtime Database
+        let store = {
+            grievances: [],
+            sos: [],
+            outpass: [],
+            lostfound: [],
+            students: [{"name":"Rahul Kumar","roll":"101","branch":"CSE","class":"3rd Year","status":"Present","pct":88}],
+            ratings: [5, 5, 4]
+        };
+
+        // Realtime Data Sync Listeners from Firebase Database
+        db.ref('c360_data').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                if (data.grievances) store.grievances = data.grievances;
+                if (data.sos) store.sos = data.sos;
+                if (data.outpass) store.outpass = data.outpass;
+                if (data.lostfound) store.lostfound = data.lostfound;
+                if (data.students) store.students = data.students;
+                if (data.ratings) store.ratings = data.ratings;
+            }
+            updateRatingsUI();
+            if (isAdminLoggedIn) {
+                renderAdminDashboard();
+            }
+        });
+
         function commitStore() {
-            localStorage.setItem('c360_g', JSON.stringify(store.grievances));
-            localStorage.setItem('c360_sos', JSON.stringify(store.sos));
-            localStorage.setItem('c360_op', JSON.stringify(store.outpass));
-            localStorage.setItem('c360_lf', JSON.stringify(store.lostfound));
-            localStorage.setItem('c360_st', JSON.stringify(store.students));
-            localStorage.setItem('c360_rt', JSON.stringify(store.ratings));
+            db.ref('c360_data').set(store);
             updateRatingsUI();
         }
 
@@ -533,6 +566,7 @@
         }
 
         function updateRatingsUI() {
+            if(!store.ratings || store.ratings.length === 0) return;
             const sum = store.ratings.reduce((a, b) => a + b, 0);
             const avg = (sum / store.ratings.length).toFixed(1);
             document.getElementById('avg-rating').innerText = avg + ' ★';
@@ -546,7 +580,7 @@
             alert('Thank you for rating CAMPUS 360!');
         }
 
-        // Grievances
+        // Grievances Handler
         document.getElementById('grievanceForm').onsubmit = function(e) {
             e.preventDefault();
             const ticket = generateTicket('GRV');
@@ -582,33 +616,36 @@
                             <p style="color:var(--text-muted); margin-top:4px;">${g.desc}</p>
                             <small style="color:var(--text-muted);">Location: ${g.location} | Date: ${g.date}</small>
                         </div>
-                        <span class="badge ${g.status==='Approved'?'badge-approved':g.status==='Rejected'?'badge-rejected':'badge-pending'}">${g.status}</span>
+                        <span class="badge badge-${g.status.toLowerCase()}">${g.status}</span>
                     </div>
                 `;
             } else {
-                res.innerHTML = `<p style="color:var(--danger);">Invalid Ticket ID!</p>`;
+                res.innerHTML = `<p style="color:var(--danger); font-weight:700;">❌ Ticket not found!</p>`;
             }
         }
 
-        // SOS Alarm
+        // SOS Emergency Handler
         function triggerEmergencySOS() {
-            const loc = document.getElementById('sos-loc').value || 'Unspecified Campus Location';
-            const ticket = generateTicket('SOS');
+            const loc = document.getElementById('sos-loc').value.trim();
+            if(!loc) {
+                alert('Please enter your live location/room number first!');
+                return;
+            }
+            const audio = document.getElementById('sosAlarmAudio');
+            if(audio) audio.play().catch(e => console.log(e));
+
             store.sos.unshift({
-                ticket,
+                id: generateTicket('SOS'),
                 location: loc,
-                time: new Date().toLocaleTimeString(),
-                date: new Date().toLocaleDateString()
+                time: new Date().toLocaleTimeString() + ' ' + new Date().toLocaleDateString(),
+                status: 'Active Emergency'
             });
             commitStore();
-            
-            const audio = document.getElementById('sosAlarmAudio');
-            audio.play().catch(e => console.log('Audio autoplay policy block'));
-
-            alert('🚨 EMERGENCY SOS SENT! Admin team alerted with Siren.');
+            alert('🚨 EMERGENCY SOS TRIGGERED! Admin Console has been alerted instantly.');
+            document.getElementById('sos-loc').value = "";
         }
 
-        // Out-Pass Application
+        // Out-Pass Handler
         document.getElementById('outpassForm').onsubmit = function(e) {
             e.preventDefault();
             const ticket = generateTicket('OTP');
@@ -620,16 +657,16 @@
                 pphone: document.getElementById('op-pphone').value,
                 dest: document.getElementById('op-dest').value,
                 reason: document.getElementById('op-reason').value,
-                out: document.getElementById('op-out').value,
-                in: document.getElementById('op-in').value,
+                outTime: document.getElementById('op-out').value,
+                inTime: document.getElementById('op-in').value,
                 status: 'Pending'
             });
             commitStore();
             document.getElementById('outpass-ticket-display').innerHTML = `
                 <div class="ticket-box">
-                    <h3 style="color:#fff;">Out-Pass Request Logged!</h3>
-                    <p>Ticket ID: <b style="color:var(--accent-primary); font-size:1.3rem;">${ticket}</b></p>
-                    <small style="color:var(--text-muted);">Use this ID to download pass after Admin Approval.</small>
+                    <h3 style="color:#fff;">Out-Pass Request Submitted!</h3>
+                    <p>Ticket ID: <b style="color:var(--success); font-size:1.3rem;">${ticket}</b></p>
+                    <small style="color:var(--text-muted);">Waiting for Admin Approval.</small>
                 </div>
             `;
             this.reset();
@@ -642,30 +679,27 @@
             if(op) {
                 if(op.status === 'Approved') {
                     box.innerHTML = `
-                        <div class="data-card" style="border-color:var(--success); background:rgba(16,185,129,0.08);">
-                            <div>
-                                <h3 style="color:var(--success);"><i class="fa-solid fa-circle-check"></i> OUT-PASS APPROVED</h3>
-                                <p><b>Student:</b> ${op.name} (${op.roll})</p>
-                                <p><b>Destination:</b> ${op.dest}</p>
-                                <p><b>Valid From:</b> ${op.out} <b>To:</b> ${op.in}</p>
-                            </div>
-                            <button class="btn btn-success" onclick="window.print()"><i class="fa-solid fa-print"></i> Download PDF Pass</button>
+                        <div class="ticket-box" style="border-color:var(--success); background:rgba(16,185,129,0.1);">
+                            <h3 style="color:var(--success);">Gate Pass Approved! ✅</h3>
+                            <p><b>Name:</b> ${op.name} (${op.roll})</p>
+                            <p><b>Destination:</b> ${op.dest}</p>
+                            <p><b>Out:</b> ${op.outTime} | <b>Return:</b> ${op.inTime}</p>
+                            <button onclick="window.print()" class="btn btn-success" style="margin-top:12px;"><i class="fa-solid fa-print"></i> Print / Download Pass</button>
                         </div>
                     `;
                 } else {
-                    box.innerHTML = `<div class="data-card"><div><h4>Ticket: ${op.ticket}</h4><p>Status: <b style="color:var(--warning);">${op.status}</b></p></div></div>`;
+                    box.innerHTML = `<div class="data-card"><div><h4>Ticket: ${op.ticket}</h4><p style="color:var(--text-muted);">Status: ${op.status}</p></div><span class="badge badge-pending">${op.status}</span></div>`;
                 }
             } else {
-                box.innerHTML = `<p style="color:var(--danger);">Ticket ID not found!</p>`;
+                box.innerHTML = `<p style="color:var(--danger); font-weight:700;">❌ Out-Pass ticket not found!</p>`;
             }
         }
 
-        // Lost & Found
+        // Lost & Found Handler
         document.getElementById('lfForm').onsubmit = function(e) {
             e.preventDefault();
-            const ticket = generateTicket('LF');
             store.lostfound.unshift({
-                ticket,
+                id: generateTicket('LF'),
                 type: document.getElementById('lf-type').value,
                 cat: document.getElementById('lf-cat').value,
                 title: document.getElementById('lf-title').value,
@@ -677,9 +711,8 @@
             commitStore();
             document.getElementById('lf-ticket-display').innerHTML = `
                 <div class="ticket-box">
-                    <h3 style="color:#fff;">Report Submitted!</h3>
-                    <p>Ticket ID: <b style="color:var(--accent-primary);">${ticket}</b></p>
-                    <small>Visible in public directory post Admin Approval.</small>
+                    <h3 style="color:#fff;">Item Listed for Review!</h3>
+                    <p style="color:var(--text-muted);">It will appear publicly once approved by Admin.</p>
                 </div>
             `;
             this.reset();
@@ -687,125 +720,148 @@
 
         function renderPublicLostFound() {
             const list = document.getElementById('lf-public-list');
-            const approved = store.lostfound.filter(i => i.status === 'Approved');
-            if(!approved.length) { list.innerHTML = '<p style="color:var(--text-muted);">No approved listings available.</p>'; return; }
-            list.innerHTML = approved.map(i => `
+            const approved = store.lostfound.filter(item => item.status === 'Approved');
+            if(approved.length === 0) {
+                list.innerHTML = `<p style="color:var(--text-muted);">No approved listings available.</p>`;
+                return;
+            }
+            list.innerHTML = approved.map(item => `
                 <div class="data-card">
                     <div>
-                        <h4>${i.type==='Lost'?'❌ LOST':'✅ FOUND'}: ${i.title} <small style="color:var(--text-muted);">(${i.cat})</small></h4>
-                        <p style="color:var(--text-muted); margin-top:4px;">${i.desc}</p>
-                        <small style="color:var(--text-muted);">Location: ${i.loc} | Contact: ${i.contact}</small>
+                        <span class="badge" style="background:${item.type==='Lost'?'rgba(244,63,94,0.15)':'rgba(16,185,129,0.15)'}; color:${item.type==='Lost'?'var(--danger)':'var(--success)'};">${item.type} - ${item.cat}</span>
+                        <h4 style="margin-top:6px; color:#fff;">${item.title}</h4>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">${item.desc}</p>
+                        <small style="color:var(--text-muted);">Location: ${item.loc} | Contact: <b>${item.contact}</b></small>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Parent Check
+        // Parent Portal Attendance Check
         function parentCheckAttendance() {
-            const r = document.getElementById('parent-search-roll').value.trim();
+            const roll = document.getElementById('parent-search-roll').value.trim();
             const res = document.getElementById('parent-search-result');
-            const st = store.students.find(s => s.roll.toLowerCase() === r.toLowerCase());
+            const st = store.students.find(s => s.roll.toLowerCase() === roll.toLowerCase());
             if(st) {
                 res.innerHTML = `
-                    <div class="data-card" style="border-color:${st.status==='Present'?'var(--success)':'var(--danger)'};">
+                    <div class="data-card">
                         <div>
-                            <h3>${st.name} (Roll: ${st.roll})</h3>
-                            <p style="color:var(--text-muted);">Branch: ${st.branch} | Class: ${st.class}</p>
-                            <p style="margin-top:8px;">Campus Presence Today: <b style="color:${st.status==='Present'?'#34d399':'#f87171'};">${st.status==='Present'?'✅ Present (Inside Campus)':'❌ Absent (Outside Campus)'}</b></p>
-                            <p style="margin-top:4px;">Overall Attendance Rate: <b style="color:var(--accent-primary); font-size:1.2rem;">${st.pct}%</b></p>
+                            <h4 style="color:#fff;">${st.name} (Roll: ${st.roll})</h4>
+                            <p style="color:var(--text-muted); margin-top:4px;">Branch: ${st.branch} | Class: ${st.class}</p>
+                            <p style="margin-top:6px;">Attendance: <b style="color:var(--success);">${st.pct}%</b></p>
                         </div>
+                        <span class="badge" style="background:${st.status==='Present'?'rgba(16,185,129,0.15)':'rgba(244,63,94,0.15)'}; color:${st.status==='Present'?'var(--success)':'var(--danger)'};">${st.status}</span>
                     </div>
                 `;
             } else {
-                res.innerHTML = `<p style="color:var(--danger);">No record found for Roll: ${r}</p>`;
+                res.innerHTML = `<p style="color:var(--danger); font-weight:700;">❌ Student record not found in master database.</p>`;
             }
         }
 
-        // Admin Core
+        // Admin Dashboards & Sub-tabs
         function switchAdminSubTab(sub) {
-            ['sos', 'grievance', 'outpass', 'lf', 'roster'].forEach(t => {
-                document.getElementById('adm-' + t + '-view').style.display = (t === sub) ? 'block' : 'none';
+            ['sos', 'grievance', 'outpass', 'lf', 'roster'].forEach(s => {
+                document.getElementById('adm-' + s + '-view').style.display = (s === sub) ? 'block' : 'none';
             });
+            renderAdminDashboard();
         }
 
         function renderAdminDashboard() {
-            document.getElementById('count-sos').innerText = store.sos.length;
+            document.getElementById('count-sos').innerText = store.sos.filter(s => s.status === 'Active Emergency').length;
 
-            document.getElementById('adm-sos-list').innerHTML = store.sos.length ? store.sos.map((s, idx) => `
-                <div class="data-card" style="border-color:var(--danger); background:rgba(244,63,94,0.08);">
+            // SOS List
+            document.getElementById('adm-sos-list').innerHTML = store.sos.length === 0 ? '<p style="color:var(--text-muted);">No emergency alerts.</p>' : store.sos.map((s, idx) => `
+                <div class="data-card" style="border-color:var(--danger);">
                     <div>
-                        <h4 style="color:var(--danger);"><i class="fa-solid fa-bell"></i> SOS ALERT (${s.ticket})</h4>
-                        <p>Location: <b>${s.location}</b></p>
-                        <small style="color:var(--text-muted);">Time: ${s.time} | Date: ${s.date}</small>
+                        <h4 style="color:var(--danger);">🚨 ${s.id} - ${s.location}</h4>
+                        <small style="color:var(--text-muted);">Triggered at: ${s.time}</small>
                     </div>
-                    <button class="btn btn-danger" onclick="deleteItem('sos', ${idx})"><i class="fa-solid fa-trash"></i> Resolve</button>
+                    <button onclick="resolveSOS(${idx})" class="btn btn-success">Mark Resolved</button>
                 </div>
-            `).join('') : '<p style="color:var(--text-muted);">No emergency alerts.</p>';
+            `).join('');
 
-            document.getElementById('adm-grievance-list').innerHTML = store.grievances.length ? store.grievances.map((g, idx) => `
+            // Grievances List
+            document.getElementById('adm-grievance-list').innerHTML = store.grievances.length === 0 ? '<p style="color:var(--text-muted);">No complaints.</p>' : store.grievances.map((g, idx) => `
                 <div class="data-card">
                     <div>
-                        <h4>Ticket: ${g.ticket} (${g.cat})</h4>
+                        <h4>${g.ticket} - Roll: ${g.roll} (${g.cat})</h4>
                         <p style="color:var(--text-muted);">${g.desc}</p>
-                        <small style="color:var(--text-muted);">Roll: ${g.roll} | Loc: ${g.location}</small>
+                        <small style="color:var(--text-muted);">Location: ${g.location}</small>
                     </div>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn btn-success" onclick="updateStatus('grievances', ${idx}, 'Approved')">Approve</button>
-                        <button class="btn btn-danger" onclick="deleteItem('grievances', ${idx})"><i class="fa-solid fa-trash"></i></button>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <span class="badge badge-${g.status.toLowerCase()}">${g.status}</span>
+                        <button onclick="updateGrievanceStatus(${idx}, 'Approved')" class="btn btn-success">Approve</button>
+                        <button onclick="updateGrievanceStatus(${idx}, 'Rejected')" class="btn btn-danger">Reject</button>
                     </div>
                 </div>
-            `).join('') : '<p style="color:var(--text-muted);">No grievances.</p>';
+            `).join('');
 
-            document.getElementById('adm-outpass-list').innerHTML = store.outpass.length ? store.outpass.map((o, idx) => `
+            // Out-pass List
+            document.getElementById('adm-outpass-list').innerHTML = store.outpass.length === 0 ? '<p style="color:var(--text-muted);">No out-pass requests.</p>' : store.outpass.map((op, idx) => `
                 <div class="data-card">
                     <div>
-                        <h4>Ticket: ${o.ticket} - ${o.name} (${o.roll})</h4>
-                        <p style="color:var(--text-muted);">Reason: ${o.reason} | Destination: ${o.dest}</p>
-                        <small style="color:var(--text-muted);">Out: ${o.out} | Return: ${o.in}</small>
+                        <h4>${op.ticket} - ${op.name} (${op.roll})</h4>
+                        <p style="color:var(--text-muted);">Destination: ${op.dest} | Reason: ${op.reason}</p>
+                        <small style="color:var(--text-muted);">Out: ${op.outTime} | In: ${op.inTime}</small>
                     </div>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn btn-success" onclick="updateStatus('outpass', ${idx}, 'Approved')">Approve</button>
-                        <button class="btn btn-danger" onclick="deleteItem('outpass', ${idx})"><i class="fa-solid fa-trash"></i></button>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <span class="badge badge-${op.status.toLowerCase()}">${op.status}</span>
+                        <button onclick="updateOutpassStatus(${idx}, 'Approved')" class="btn btn-success">Approve</button>
+                        <button onclick="updateOutpassStatus(${idx}, 'Rejected')" class="btn btn-danger">Reject</button>
                     </div>
                 </div>
-            `).join('') : '<p style="color:var(--text-muted);">No out-passes.</p>';
+            `).join('');
 
-            document.getElementById('adm-lf-list').innerHTML = store.lostfound.length ? store.lostfound.map((l, idx) => `
+            // Lost & Found Admin Queue
+            document.getElementById('adm-lf-list').innerHTML = store.lostfound.length === 0 ? '<p style="color:var(--text-muted);">No items in queue.</p>' : store.lostfound.map((lf, idx) => `
                 <div class="data-card">
                     <div>
-                        <h4>${l.type}: ${l.title} (${l.ticket})</h4>
-                        <p style="color:var(--text-muted);">${l.desc}</p>
-                        <small style="color:var(--text-muted);">Loc: ${l.loc} | Contact: ${l.contact}</small>
+                        <h4>${lf.type} - ${lf.title} (${lf.cat})</h4>
+                        <p style="color:var(--text-muted);">${lf.desc}</p>
+                        <small style="color:var(--text-muted);">Location: ${lf.loc} | Contact: ${lf.contact}</small>
                     </div>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn btn-success" onclick="updateStatus('lostfound', ${idx}, 'Approved')">Approve</button>
-                        <button class="btn btn-danger" onclick="deleteItem('lostfound', ${idx})"><i class="fa-solid fa-trash"></i></button>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <span class="badge badge-${lf.status.toLowerCase()}">${lf.status}</span>
+                        <button onclick="updateLFStatus(${idx}, 'Approved')" class="btn btn-success">Approve</button>
+                        <button onclick="updateLFStatus(${idx}, 'Rejected')" class="btn btn-danger">Reject</button>
                     </div>
                 </div>
-            `).join('') : '<p style="color:var(--text-muted);">No lost & found reports.</p>';
+            `).join('');
 
+            // Student Roster List
             document.getElementById('adm-roster-list').innerHTML = store.students.map((st, idx) => `
                 <div class="data-card">
                     <div>
-                        <h4>${st.name} (Roll: ${st.roll})</h4>
-                        <p style="color:var(--text-muted);">Branch: ${st.branch} | Class: ${st.class} | Attendance: ${st.pct}%</p>
-                        <small>Status: <b>${st.status}</b></small>
+                        <h4 style="color:#fff;">${st.name} (Roll: ${st.roll})</h4>
+                        <p style="color:var(--text-muted);">${st.branch} - ${st.class} | Attendance: ${st.pct}%</p>
                     </div>
-                    <button class="btn btn-danger" onclick="deleteItem('students', ${idx})"><i class="fa-solid fa-trash"></i> Delete</button>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <span class="badge" style="background:${st.status==='Present'?'rgba(16,185,129,0.15)':'rgba(244,63,94,0.15)'}; color:${st.status==='Present'?'var(--success)':'var(--danger)'};">${st.status}</span>
+                        <button onclick="deleteStudent(${idx})" class="btn btn-danger">Delete</button>
+                    </div>
                 </div>
             `).join('');
         }
 
-        function updateStatus(cat, idx, status) {
-            store[cat][idx].status = status;
+        // Admin Actions
+        function resolveSOS(idx) {
+            store.sos[idx].status = 'Resolved';
             commitStore();
-            renderAdminDashboard();
         }
 
-        function deleteItem(cat, idx) {
-            store[cat].splice(idx, 1);
+        function updateGrievanceStatus(idx, status) {
+            store.grievances[idx].status = status;
             commitStore();
-            renderAdminDashboard();
+        }
+
+        function updateOutpassStatus(idx, status) {
+            store.outpass[idx].status = status;
+            commitStore();
+        }
+
+        function updateLFStatus(idx, status) {
+            store.lostfound[idx].status = status;
+            commitStore();
         }
 
         function saveStudentToRoster() {
@@ -814,18 +870,27 @@
             const branch = document.getElementById('adm-st-branch').value.trim();
             const cls = document.getElementById('adm-st-class').value.trim();
             const status = document.getElementById('adm-st-status').value;
-            const pct = document.getElementById('adm-st-pct').value || 100;
+            const pct = parseInt(document.getElementById('adm-st-pct').value);
 
-            if(!name || !roll) return alert('Name and Roll number are required!');
+            if(!name || !roll || isNaN(pct)) {
+                alert('Please fill all student details correctly!');
+                return;
+            }
 
-            store.students = store.students.filter(s => s.roll.toLowerCase() !== roll.toLowerCase());
             store.students.push({ name, roll, branch, class: cls, status, pct });
             commitStore();
-            renderAdminDashboard();
-            alert('Student added!');
+            alert('Student record added successfully!');
+            document.getElementById('adm-st-name').value = "";
+            document.getElementById('adm-st-roll').value = "";
+            document.getElementById('adm-st-branch').value = "";
+            document.getElementById('adm-st-class').value = "";
+            document.getElementById('adm-st-pct').value = "";
         }
 
-        updateRatingsUI();
+        function deleteStudent(idx) {
+            store.students.splice(idx, 1);
+            commitStore();
+        }
     </script>
 </body>
 </html>
