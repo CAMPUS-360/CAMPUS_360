@@ -3,71 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAMPUS 360 - Unified Campus Ecosystem</title>
+    <title>CAMPUS 360 - Centralized Smart Campus Ecosystem</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg: #0b0f19;
-            --card: rgba(23, 32, 54, 0.7);
-            --accent: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.4);
-            --danger: #ef4444;
+            --bg-base: #060913;
+            --card-bg: rgba(18, 26, 47, 0.65);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-primary: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.35);
+            --danger: #f43f5e;
+            --danger-glow: rgba(244, 63, 94, 0.4);
             --success: #10b981;
             --warning: #f59e0b;
-            --text: #f8fafc;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        body { background: var(--bg); color: var(--text); padding-bottom: 60px; min-height: 100vh; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body {
+            background: var(--bg-base);
+            background-image: 
+                radial-gradient(at 15% 15%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 85% 85%, rgba(244, 63, 94, 0.12) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
 
+        /* HEADER & NAV BAR */
         header {
-            background: rgba(11, 15, 25, 0.9);
-            backdrop-filter: blur(16px);
-            padding: 15px 25px;
+            background: rgba(6, 9, 19, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 16px 30px;
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid var(--card-border);
             position: sticky; top: 0; z-index: 1000;
         }
 
-        .logo { font-size: 1.5rem; font-weight: 900; background: linear-gradient(135deg, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand-logo {
+            font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px;
+            display: flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, #a5b4fc, #c084fc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
 
-        nav { display: flex; gap: 6px; flex-wrap: wrap; }
+        nav { display: flex; gap: 8px; flex-wrap: wrap; }
+        
         nav button {
-            background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);
-            padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+            border: 1px solid var(--card-border);
+            padding: 9px 16px; border-radius: 12px;
+            cursor: pointer; font-size: 0.85rem; font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        nav button:hover, nav button.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
-        nav button.sos-btn { background: var(--danger); color: #fff; border-color: var(--danger); animation: pulse 2s infinite; }
 
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+        nav button:hover, nav button.active {
+            background: var(--accent-primary);
+            color: #fff; border-color: var(--accent-primary);
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transform: translateY(-1px);
+        }
 
-        .container { max-width: 1050px; margin: 25px auto; padding: 0 15px; }
-        .card { background: var(--card); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+        nav button.sos-btn {
+            background: rgba(244, 63, 94, 0.15);
+            color: var(--danger);
+            border-color: rgba(244, 63, 94, 0.4);
+            animation: pulseGlow 2s infinite;
+        }
 
-        h2 { margin-bottom: 16px; font-size: 1.4rem; color: #fff; }
-        label { font-size: 0.85rem; color: #94a3b8; margin-top: 10px; display: block; }
+        nav button.sos-btn:hover, nav button.sos-btn.active {
+            background: var(--danger); color: white;
+            box-shadow: 0 0 25px var(--danger-glow);
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(244, 63, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+        }
+
+        /* LAYOUT & CARDS */
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px; padding: 28px; margin-bottom: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: border-color 0.3s ease;
+        }
+
+        .card:hover { border-color: rgba(255, 255, 255, 0.15); }
+
+        h2 { font-size: 1.35rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #fff; }
+
+        /* FORM CONTROLS */
+        label { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 14px; display: block; }
+        
         input, textarea, select {
-            width: 100%; padding: 12px; margin-top: 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(0,0,0,0.4); color: #fff; font-size: 0.95rem; outline: none;
+            width: 100%; padding: 13px 16px; margin-top: 6px;
+            border-radius: 12px; border: 1px solid var(--card-border);
+            background: rgba(5, 8, 18, 0.6); color: #fff;
+            font-size: 0.95rem; font-weight: 500; outline: none;
+            transition: all 0.2s ease;
         }
-        input:focus, textarea:focus, select:focus { border-color: var(--accent); }
 
-        .btn { background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 15px; }
-        .btn-danger { background: var(--danger); width: auto; padding: 6px 12px; }
-        .btn-success { background: var(--success); width: auto; padding: 6px 12px; }
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        /* BUTTONS */
+        .btn {
+            background: linear-gradient(135deg, var(--accent-primary), #4f46e5);
+            color: white; border: none; padding: 14px 22px;
+            border-radius: 12px; font-weight: 700; font-size: 0.95rem;
+            cursor: pointer; width: 100%; margin-top: 18px;
+            display: inline-flex; justify-content: center; align-items: center; gap: 8px;
+            box-shadow: 0 4px 15px var(--accent-glow); transition: all 0.25s ease;
+        }
+
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .btn-danger { background: var(--danger); box-shadow: 0 4px 15px var(--danger-glow); width: auto; padding: 8px 14px; font-size: 0.85rem; }
+        .btn-success { background: var(--success); width: auto; padding: 8px 14px; font-size: 0.85rem; }
 
         .section { display: none; }
-        .section.active { display: block; }
+        .section.active { display: block; animation: fadeIn 0.3s ease; }
 
-        .data-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
-        .badge-pending { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
-        .badge-approved { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
-        .badge-rejected { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        .ticket-box { background: rgba(99, 102, 241, 0.15); border: 1px dashed var(--accent); padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center; }
-        
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+        /* DASHBOARD DATA LISTS */
+        .data-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            padding: 18px; border-radius: 14px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .badge {
+            padding: 6px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .badge-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-approved { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-rejected { background: rgba(244, 63, 94, 0.15); color: #f87171; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+        .ticket-box {
+            background: rgba(99, 102, 241, 0.1); border: 1px dashed var(--accent-primary);
+            padding: 20px; border-radius: 14px; margin-top: 20px; text-align: center;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -75,15 +174,17 @@
     <audio id="sosAlarmAudio" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
 
     <header>
-        <div class="logo">🎓 CAMPUS 360</div>
+        <div class="brand-logo">
+            <i class="fa-solid fa-graduation-cap"></i> CAMPUS 360
+        </div>
         <nav>
-            <button onclick="switchTab('home')" id="nav-home" class="active">Home</button>
-            <button onclick="switchTab('grievance')" id="nav-grievance">Grievance</button>
-            <button onclick="switchTab('sos')" id="nav-sos" class="sos-btn">🚨 SOS</button>
-            <button onclick="switchTab('outpass')" id="nav-outpass">Out-Pass</button>
-            <button onclick="switchTab('lostfound')" id="nav-lostfound">Lost & Found</button>
-            <button onclick="switchTab('parent')" id="nav-parent">Parent</button>
-            <button onclick="switchTab('admin')" id="nav-admin">Admin</button>
+            <button onclick="switchTab('home')" id="nav-home" class="active"><i class="fa-solid fa-house"></i> Home</button>
+            <button onclick="switchTab('grievance')" id="nav-grievance"><i class="fa-solid fa-bullhorn"></i> Grievance</button>
+            <button onclick="switchTab('sos')" id="nav-sos" class="sos-btn"><i class="fa-solid fa-shield-cat"></i> SOS</button>
+            <button onclick="switchTab('outpass')" id="nav-outpass"><i class="fa-solid fa-ticket"></i> Out-Pass</button>
+            <button onclick="switchTab('lostfound')" id="nav-lostfound"><i class="fa-solid fa-magnifying-glass"></i> Lost & Found</button>
+            <button onclick="switchTab('parent')" id="nav-parent"><i class="fa-solid fa-user-group"></i> Parent</button>
+            <button onclick="switchTab('admin')" id="nav-admin"><i class="fa-solid fa-sliders"></i> Admin</button>
         </nav>
     </header>
 
@@ -91,41 +192,46 @@
 
         <!-- 1. HOME PORTAL -->
         <section id="view-home" class="section active">
-            <div class="card" style="text-align: center; padding: 40px 20px;">
-                <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Welcome to CAMPUS 360</h1>
-                <p style="color: #94a3b8; max-width: 600px; margin: 0 auto 25px;">Your digital centralized campus hub for Grievances, Emergency Anti-Ragging SOS, Gate Passes, Lost & Found tracking, and Parent Monitoring.</p>
-                <div style="display: flex; justify-content: center; gap: 20px;">
-                    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; min-width: 140px;">
-                        <h3 id="avg-rating">4.8 ★</h3>
-                        <small style="color: #94a3b8;">Average Rating</small>
+            <div class="card" style="text-align: center; padding: 50px 20px; background: radial-gradient(circle at center, rgba(99,102,241,0.15) 0%, rgba(18,26,47,0.65) 100%);">
+                <h1 style="font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; background: linear-gradient(to right, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Centralized Smart Campus Portal</h1>
+                <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto 30px; line-height: 1.6;">Unified Realtime platform for Student Grievances, Emergency Anti-Ragging Assistance, Gate Passes, Lost & Found Registry, and Parent Attendance Monitoring.</p>
+                
+                <div class="grid-3" style="max-width: 700px; margin: 0 auto;">
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); padding: 22px; border-radius: 16px;">
+                        <h3 id="avg-rating" style="font-size: 1.8rem; color: #fbbf24;">4.8 ★</h3>
+                        <small style="color: var(--text-muted);">Platform Rating</small>
                     </div>
-                    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; min-width: 140px;">
-                        <h3 id="total-reviews">0</h3>
-                        <small style="color: #94a3b8;">User Reviews</small>
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); padding: 22px; border-radius: 16px;">
+                        <h3 id="total-reviews" style="font-size: 1.8rem; color: #818cf8;">0</h3>
+                        <small style="color: var(--text-muted);">Verified Reviews</small>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); padding: 22px; border-radius: 16px;">
+                        <h3 style="font-size: 1.8rem; color: #34d399;">24/7</h3>
+                        <small style="color: var(--text-muted);">Admin Monitoring</small>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>⭐ Rate & Review Campus Services</h2>
+                <h2><i class="fa-solid fa-star" style="color: #fbbf24;"></i> Rate & Review Platform</h2>
                 <label>Your Rating</label>
                 <select id="user-rating-val">
-                    <option value="5">5 Stars - Excellent</option>
-                    <option value="4">4 Stars - Good</option>
-                    <option value="3">3 Stars - Average</option>
-                    <option value="2">2 Stars - Poor</option>
-                    <option value="1">1 Star - Terrible</option>
+                    <option value="5">⭐⭐⭐⭐⭐ (5/5) Excellent</option>
+                    <option value="4">⭐⭐⭐⭐ (4/5) Very Good</option>
+                    <option value="3">⭐⭐⭐ (3/5) Average</option>
+                    <option value="2">⭐⭐ (2/5) Needs Improvement</option>
+                    <option value="1">⭐ (1/5) Poor</option>
                 </select>
-                <label>Feedback</label>
-                <textarea id="user-review-text" rows="2" placeholder="Write your feedback..."></textarea>
-                <button onclick="submitRating()" class="btn">Submit Review</button>
+                <label>Feedback & Suggestions</label>
+                <textarea id="user-review-text" rows="3" placeholder="Write your review here..."></textarea>
+                <button onclick="submitRating()" class="btn"><i class="fa-solid fa-paper-plane"></i> Submit Feedback</button>
             </div>
         </section>
 
         <!-- 2. GRIEVANCE PORTAL -->
         <section id="view-grievance" class="section">
             <div class="card">
-                <h2>📢 Register Student Grievance</h2>
+                <h2><i class="fa-solid fa-pen-to-square" style="color: #818cf8;"></i> Register Student Grievance</h2>
                 <form id="grievanceForm">
                     <div class="grid-2">
                         <div>
@@ -137,7 +243,7 @@
                             <input type="text" id="g-loc" required placeholder="e.g. Hostel B-204 / Lab 3">
                         </div>
                     </div>
-                    <label>Category</label>
+                    <label>Issue Category</label>
                     <select id="g-cat">
                         <option value="Hostel & Maintenance">Hostel & Maintenance</option>
                         <option value="Academic Issue">Academic Issue</option>
@@ -145,41 +251,43 @@
                         <option value="Canteen & Food">Canteen & Food Quality</option>
                     </select>
                     <label>Description of Issue</label>
-                    <textarea id="g-desc" rows="3" required placeholder="Provide clear details..."></textarea>
-                    <label>Proof Image (Optional)</label>
+                    <textarea id="g-desc" rows="3" required placeholder="Describe the issue clearly..."></textarea>
+                    <label>Attach Proof Image (Optional)</label>
                     <input type="file" id="g-img" accept="image/*">
-                    <button type="submit" class="btn">Submit Grievance</button>
+                    <button type="submit" class="btn"><i class="fa-solid fa-paper-plane"></i> Submit Ticket</button>
                 </form>
                 <div id="grievance-ticket-display"></div>
             </div>
 
             <div class="card">
-                <h2>🔍 Track Grievance Ticket</h2>
-                <input type="text" id="g-track-id" placeholder="Enter Ticket ID (e.g. GRV-83921)">
-                <button onclick="trackGrievance()" class="btn" style="background: var(--warning);">Track Status</button>
+                <h2><i class="fa-solid fa-magnifying-glass" style="color: #fbbf24;"></i> Track Complaint Status</h2>
+                <input type="text" id="g-track-id" placeholder="Enter Unique Ticket ID (e.g. GRV-83921)">
+                <button onclick="trackGrievance()" class="btn" style="background: linear-gradient(135deg, #f59e0b, #d97706);"><i class="fa-solid fa-compass"></i> Track Ticket</button>
                 <div id="g-track-result" style="margin-top:15px;"></div>
             </div>
         </section>
 
         <!-- 3. RAGGING SOS PORTAL -->
         <section id="view-sos" class="section">
-            <div class="card" style="border-color: var(--danger); text-align: center; background: rgba(239, 68, 68, 0.1);">
-                <h1 style="color: var(--danger); font-size: 2.2rem;">🚨 ANTI-RAGGING EMERGENCY SOS</h1>
-                <p style="margin: 10px 0;">If you are facing ragging, harassment, or immediate physical threat, trigger the SOS button below!</p>
+            <div class="card" style="border-color: rgba(244, 63, 94, 0.4); text-align: center; background: radial-gradient(circle at center, rgba(244, 63, 94, 0.15) 0%, rgba(18, 26, 47, 0.8) 100%);">
+                <h1 style="color: var(--danger); font-size: 2.3rem; margin-bottom: 10px;"><i class="fa-solid fa-bell-concierge"></i> ANTI-RAGGING SOS EMERGENCY</h1>
+                <p style="margin-bottom: 20px; color: var(--text-muted);">In case of any emergency, threat, or ragging issue inside campus, hit the SOS trigger immediately. Siren audio alert will sound at Admin Console.</p>
                 <label>Your Live Campus Location / Hostel Room No</label>
-                <input type="text" id="sos-loc" placeholder="e.g. Main Library 2nd Floor / Block A Quadrangle" style="text-align:center; font-weight:bold;">
-                <button onclick="triggerEmergencySOS()" class="btn" style="background: var(--danger); font-size: 1.3rem; padding: 18px; margin-top: 15px;">🔥 PRESS EMERGENCY SOS NOW 🔥</button>
+                <input type="text" id="sos-loc" placeholder="e.g. Block C Ground Floor / Library Rear Entry" style="text-align:center; font-weight:700; font-size:1.1rem; border-color: rgba(244,63,94,0.4);">
+                <button onclick="triggerEmergencySOS()" class="btn" style="background: linear-gradient(135deg, #f43f5e, #be123c); font-size: 1.2rem; padding: 18px; margin-top: 20px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> PRESS SOS ALARM NOW
+                </button>
             </div>
         </section>
 
         <!-- 4. OUT-PASS PORTAL -->
         <section id="view-outpass" class="section">
             <div class="card">
-                <h2>🎫 Apply for Campus Out-Pass</h2>
+                <h2><i class="fa-solid fa-passport" style="color: #34d399;"></i> Apply Out-Pass</h2>
                 <form id="outpassForm">
                     <div class="grid-2">
                         <div>
-                            <label>Student Name</label>
+                            <label>Student Full Name</label>
                             <input type="text" id="op-name" required placeholder="Full Name">
                         </div>
                         <div>
@@ -189,18 +297,18 @@
                     </div>
                     <div class="grid-2">
                         <div>
-                            <label>Student Contact No.</label>
-                            <input type="tel" id="op-sphone" required placeholder="Mobile Number">
+                            <label>Student Contact</label>
+                            <input type="tel" id="op-sphone" required placeholder="Phone Number">
                         </div>
                         <div>
-                            <label>Parent Contact No.</label>
-                            <input type="tel" id="op-pphone" required placeholder="Parent Mobile Number">
+                            <label>Parent Contact</label>
+                            <input type="tel" id="op-pphone" required placeholder="Parent Phone Number">
                         </div>
                     </div>
                     <div class="grid-2">
                         <div>
-                            <label>Destination / Place Going</label>
-                            <input type="text" id="op-dest" required placeholder="City / Home Address">
+                            <label>Destination / Visiting Place</label>
+                            <input type="text" id="op-dest" required placeholder="Destination Address">
                         </div>
                         <div>
                             <label>Reason for Leave</label>
@@ -209,7 +317,7 @@
                     </div>
                     <div class="grid-2">
                         <div>
-                            <label>Out Date & Time</label>
+                            <label>Out Departure Date & Time</label>
                             <input type="datetime-local" id="op-out" required>
                         </div>
                         <div>
@@ -217,15 +325,15 @@
                             <input type="datetime-local" id="op-in" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn">Apply Out-Pass</button>
+                    <button type="submit" class="btn"><i class="fa-solid fa-file-export"></i> Submit Request</button>
                 </form>
                 <div id="outpass-ticket-display"></div>
             </div>
 
             <div class="card">
-                <h2>📥 Check & Download Approved Out-Pass</h2>
+                <h2><i class="fa-solid fa-download" style="color: #34d399;"></i> Check Approval & Download Gate Pass</h2>
                 <input type="text" id="op-search-id" placeholder="Enter Out-Pass Ticket ID (e.g. OTP-94012)">
-                <button onclick="checkOutpassStatus()" class="btn" style="background: var(--success);">Verify & Download Pass</button>
+                <button onclick="checkOutpassStatus()" class="btn" style="background: linear-gradient(135deg, #10b981, #047857);"><i class="fa-solid fa-circle-check"></i> Verify Ticket Status</button>
                 <div id="op-download-container" style="margin-top:15px;"></div>
             </div>
         </section>
@@ -233,41 +341,41 @@
         <!-- 5. LOST & FOUND PORTAL -->
         <section id="view-lostfound" class="section">
             <div class="card">
-                <h2>🔍 Report Lost / Found Item</h2>
+                <h2><i class="fa-solid fa-box-open" style="color: #c084fc;"></i> Report Lost / Found Item</h2>
                 <form id="lfForm">
                     <div class="grid-2">
                         <div>
-                            <label>Listing Type</label>
+                            <label>Report Type</label>
                             <select id="lf-type">
                                 <option value="Lost">I Lost Something ❌</option>
                                 <option value="Found">I Found Something ✅</option>
                             </select>
                         </div>
                         <div>
-                            <label>Item Category</label>
+                            <label>Category</label>
                             <select id="lf-cat">
                                 <option value="Electronics">Electronics (Phone, Laptop, Charger)</option>
                                 <option value="ID Cards / Docs">ID Card / Wallet / Keys</option>
                                 <option value="Clothing / Accessories">Bag / Watch / Glasses</option>
-                                <option value="Other">Other</option>
+                                <option value="Other">Other Items</option>
                             </select>
                         </div>
                     </div>
                     <label>Item Title</label>
-                    <input type="text" id="lf-title" required placeholder="e.g. Black Fastrack Watch / Red Boat Airopes">
-                    <label>Location (Where Lost/Found)</label>
+                    <input type="text" id="lf-title" required placeholder="e.g. Black Fastrack Watch / Red Boat Airpods">
+                    <label>Location (Where Lost / Found)</label>
                     <input type="text" id="lf-loc" required placeholder="e.g. Canteen Hall / Basketball Court">
                     <label>Contact Details</label>
-                    <input type="text" id="lf-contact" required placeholder="Phone No or Instagram Handle">
-                    <label>Item Description</label>
-                    <textarea id="lf-desc" rows="2" required placeholder="Specific identifying details..."></textarea>
-                    <button type="submit" class="btn">Submit Report</button>
+                    <input type="text" id="lf-contact" required placeholder="Phone No / Insta ID">
+                    <label>Description</label>
+                    <textarea id="lf-desc" rows="2" required placeholder="Detailed description of item..."></textarea>
+                    <button type="submit" class="btn"><i class="fa-solid fa-paper-plane"></i> Submit Listing</button>
                 </form>
                 <div id="lf-ticket-display"></div>
             </div>
 
             <div class="card">
-                <h2>🔍 Browse Approved Lost & Found Items</h2>
+                <h2><i class="fa-solid fa-list-check" style="color: #818cf8;"></i> Approved Public Listings</h2>
                 <div id="lf-public-list"></div>
             </div>
         </section>
@@ -275,10 +383,10 @@
         <!-- 6. PARENT PORTAL -->
         <section id="view-parent" class="section">
             <div class="card">
-                <h2>👨‍👩‍👧 Parent Portal - Attendance & Presence Tracker</h2>
-                <p style="color: #94a3b8; margin-bottom: 15px;">Enter student roll number to view official campus attendance status and attendance percentage.</p>
-                <input type="text" id="parent-search-roll" placeholder="Enter Student Roll Number (e.g. 101)">
-                <button onclick="parentCheckAttendance()" class="btn">Search Attendance Record</button>
+                <h2><i class="fa-solid fa-user-check" style="color: #818cf8;"></i> Parent Attendance Verification Portal</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Enter student roll number to check real-time attendance status inside campus and attendance percentage.</p>
+                <input type="text" id="parent-search-roll" placeholder="Enter Roll Number (e.g. 101)">
+                <button onclick="parentCheckAttendance()" class="btn"><i class="fa-solid fa-magnifying-glass"></i> Search Student Profile</button>
                 <div id="parent-search-result" style="margin-top:20px;"></div>
             </div>
         </section>
@@ -286,46 +394,46 @@
         <!-- 7. ADMIN DASHBOARD -->
         <section id="view-admin" class="section">
             <div class="card">
-                <h2>🛠️ Admin Portal Control Center</h2>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
-                    <button onclick="switchAdminSubTab('sos')" class="btn" style="background:var(--danger); flex:1;">🚨 SOS (<span id="count-sos">0</span>)</button>
-                    <button onclick="switchAdminSubTab('grievance')" class="btn" style="flex:1;">📢 Complaints</button>
-                    <button onclick="switchAdminTabOutpass()" class="btn" style="background:var(--warning); flex:1;">🎫 Out-Pass</button>
-                    <button onclick="switchAdminSubTab('lf')" class="btn" style="flex:1;">🔍 Lost/Found</button>
-                    <button onclick="switchAdminSubTab('roster')" class="btn" style="background:var(--success); flex:1;">👨‍🎓 Students Roster</button>
+                <h2><i class="fa-solid fa-user-shield" style="color: #f43f5e;"></i> Admin Dashboard Console</h2>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+                    <button onclick="switchAdminSubTab('sos')" class="btn" style="background:var(--danger); flex:1;"><i class="fa-solid fa-bell"></i> SOS (<span id="count-sos">0</span>)</button>
+                    <button onclick="switchAdminSubTab('grievance')" class="btn" style="flex:1;"><i class="fa-solid fa-bullhorn"></i> Grievances</button>
+                    <button onclick="switchAdminSubTab('outpass')" class="btn" style="background:var(--warning); flex:1;"><i class="fa-solid fa-ticket"></i> Out-Pass</button>
+                    <button onclick="switchAdminSubTab('lf')" class="btn" style="flex:1;"><i class="fa-solid fa-boxes-stacked"></i> Lost/Found</button>
+                    <button onclick="switchAdminSubTab('roster')" class="btn" style="background:var(--success); flex:1;"><i class="fa-solid fa-users"></i> Student Roster</button>
                 </div>
 
-                <!-- ADMIN SUBS -->
+                <!-- ADMIN PANELS -->
                 <div id="adm-sos-view">
-                    <h3 style="color: var(--danger);">Emergency Anti-Ragging Alerts</h3>
+                    <h3 style="color: var(--danger); margin-bottom: 12px;">Emergency Anti-Ragging Live Alerts</h3>
                     <div id="adm-sos-list"></div>
                 </div>
 
                 <div id="adm-grievance-view" style="display:none;">
-                    <h3>Submitted Grievances</h3>
+                    <h3 style="margin-bottom: 12px;">Submitted Complaints</h3>
                     <div id="adm-grievance-list"></div>
                 </div>
 
                 <div id="adm-outpass-view" style="display:none;">
-                    <h3>Out-Pass Approvals</h3>
+                    <h3 style="margin-bottom: 12px;">Out-Pass Requests</h3>
                     <div id="adm-outpass-list"></div>
                 </div>
 
                 <div id="adm-lf-view" style="display:none;">
-                    <h3>Lost & Found Item Approvals</h3>
+                    <h3 style="margin-bottom: 12px;">Lost & Found Approval Queue</h3>
                     <div id="adm-lf-list"></div>
                 </div>
 
                 <div id="adm-roster-view" style="display:none;">
-                    <h3>Add / Update Student Attendance Roster</h3>
-                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                    <h3 style="margin-bottom: 12px;">Update Student Attendance Master Roster</h3>
+                    <div style="background: rgba(0,0,0,0.4); padding: 20px; border-radius: 14px; border: 1px solid var(--card-border); margin-bottom: 20px;">
                         <div class="grid-2">
-                            <input type="text" id="adm-st-name" placeholder="Student Name">
+                            <input type="text" id="adm-st-name" placeholder="Student Full Name">
                             <input type="text" id="adm-st-roll" placeholder="Roll Number">
                         </div>
                         <div class="grid-2">
                             <input type="text" id="adm-st-branch" placeholder="Branch (e.g. CSE)">
-                            <input type="text" id="adm-st-class" placeholder="Class / Section">
+                            <input type="text" id="adm-st-class" placeholder="Class / Year">
                         </div>
                         <div class="grid-2">
                             <select id="adm-st-status">
@@ -334,7 +442,7 @@
                             </select>
                             <input type="number" id="adm-st-pct" placeholder="Attendance Percentage (%)" min="0" max="100">
                         </div>
-                        <button onclick="saveStudentToRoster()" class="btn" style="background: var(--success);">Save Student Record</button>
+                        <button onclick="saveStudentToRoster()" class="btn" style="background: var(--success);"><i class="fa-solid fa-user-plus"></i> Save Student Record</button>
                     </div>
                     <div id="adm-roster-list"></div>
                 </div>
@@ -343,9 +451,8 @@
 
     </div>
 
-    <!-- SHARED GLOBAL CLOUD DATA SYNC CORE -->
+    <!-- SHARED DATA ENGINE -->
     <script>
-        // Central Cloud Data Store (LocalStorage Backup + Shared Sync Engine)
         let store = {
             grievances: JSON.parse(localStorage.getItem('c360_g') || '[]'),
             sos: JSON.parse(localStorage.getItem('c360_sos') || '[]'),
@@ -379,7 +486,6 @@
             if(tab === 'admin') renderAdminDashboard();
         }
 
-        // Ratings Logic
         function updateRatingsUI() {
             const sum = store.ratings.reduce((a, b) => a + b, 0);
             const avg = (sum / store.ratings.length).toFixed(1);
@@ -391,7 +497,7 @@
             const val = parseInt(document.getElementById('user-rating-val').value);
             store.ratings.push(val);
             commitStore();
-            alert('Thank you for your rating!');
+            alert('Thank you for rating CAMPUS 360!');
         }
 
         // Grievances
@@ -410,9 +516,9 @@
             commitStore();
             document.getElementById('grievance-ticket-display').innerHTML = `
                 <div class="ticket-box">
-                    <h3>Grievance Submitted Successfully!</h3>
-                    <p>Your Ticket ID is: <b style="color:var(--accent); font-size:1.2rem;">${ticket}</b></p>
-                    <small style="color:#94a3b8;">Save this Ticket ID to track complaint status.</small>
+                    <h3 style="color:#fff;">Grievance Logged!</h3>
+                    <p>Ticket ID: <b style="color:var(--accent-primary); font-size:1.3rem;">${ticket}</b></p>
+                    <small style="color:var(--text-muted);">Track complaint status using this ID.</small>
                 </div>
             `;
             this.reset();
@@ -427,8 +533,8 @@
                     <div class="data-card">
                         <div>
                             <h4>Ticket: ${g.ticket} (${g.cat})</h4>
-                            <p>${g.desc}</p>
-                            <small>Location: ${g.location} | Date: ${g.date}</small>
+                            <p style="color:var(--text-muted); margin-top:4px;">${g.desc}</p>
+                            <small style="color:var(--text-muted);">Location: ${g.location} | Date: ${g.date}</small>
                         </div>
                         <span class="badge ${g.status==='Approved'?'badge-approved':g.status==='Rejected'?'badge-rejected':'badge-pending'}">${g.status}</span>
                     </div>
@@ -438,7 +544,7 @@
             }
         }
 
-        // SOS Alarm Functionality
+        // SOS Alarm
         function triggerEmergencySOS() {
             const loc = document.getElementById('sos-loc').value || 'Unspecified Campus Location';
             const ticket = generateTicket('SOS');
@@ -450,11 +556,10 @@
             });
             commitStore();
             
-            // Trigger sound
             const audio = document.getElementById('sosAlarmAudio');
-            audio.play().catch(e => console.log('Audio autoplay prevented'));
+            audio.play().catch(e => console.log('Audio autoplay policy block'));
 
-            alert('🚨 EMERGENCY SOS SENT! Admin & Security team notified!');
+            alert('🚨 EMERGENCY SOS SENT! Admin team alerted with Siren.');
         }
 
         // Out-Pass Application
@@ -476,9 +581,9 @@
             commitStore();
             document.getElementById('outpass-ticket-display').innerHTML = `
                 <div class="ticket-box">
-                    <h3>Out-Pass Request Submitted!</h3>
-                    <p>Your Out-Pass Ticket ID: <b style="color:var(--accent); font-size:1.2rem;">${ticket}</b></p>
-                    <small style="color:#94a3b8;">Use this Ticket ID once Admin Approves to download pass.</small>
+                    <h3 style="color:#fff;">Out-Pass Request Logged!</h3>
+                    <p>Ticket ID: <b style="color:var(--accent-primary); font-size:1.3rem;">${ticket}</b></p>
+                    <small style="color:var(--text-muted);">Use this ID to download pass after Admin Approval.</small>
                 </div>
             `;
             this.reset();
@@ -491,25 +596,25 @@
             if(op) {
                 if(op.status === 'Approved') {
                     box.innerHTML = `
-                        <div class="data-card" style="border-color:var(--success); background:rgba(16,185,129,0.1);">
+                        <div class="data-card" style="border-color:var(--success); background:rgba(16,185,129,0.08);">
                             <div>
-                                <h3 style="color:var(--success);">✅ OUT-PASS APPROVED</h3>
+                                <h3 style="color:var(--success);"><i class="fa-solid fa-circle-check"></i> OUT-PASS APPROVED</h3>
                                 <p><b>Student:</b> ${op.name} (${op.roll})</p>
                                 <p><b>Destination:</b> ${op.dest}</p>
                                 <p><b>Valid From:</b> ${op.out} <b>To:</b> ${op.in}</p>
                             </div>
-                            <button class="btn btn-success" onclick="window.print()">🖨️ Download Pass PDF</button>
+                            <button class="btn btn-success" onclick="window.print()"><i class="fa-solid fa-print"></i> Download PDF Pass</button>
                         </div>
                     `;
                 } else {
-                    box.innerHTML = `<div class="data-card"><div><h4>Ticket Status: ${op.ticket}</h4><p>Current Status: <b style="color:var(--warning);">${op.status}</b></p></div></div>`;
+                    box.innerHTML = `<div class="data-card"><div><h4>Ticket: ${op.ticket}</h4><p>Status: <b style="color:var(--warning);">${op.status}</b></p></div></div>`;
                 }
             } else {
                 box.innerHTML = `<p style="color:var(--danger);">Ticket ID not found!</p>`;
             }
         }
 
-        // Lost Found
+        // Lost & Found
         document.getElementById('lfForm').onsubmit = function(e) {
             e.preventDefault();
             const ticket = generateTicket('LF');
@@ -526,9 +631,9 @@
             commitStore();
             document.getElementById('lf-ticket-display').innerHTML = `
                 <div class="ticket-box">
-                    <h3>Report Logged!</h3>
-                    <p>Ticket ID: <b style="color:var(--accent);">${ticket}</b></p>
-                    <small>Will be displayed publicly after Admin Approval.</small>
+                    <h3 style="color:#fff;">Report Submitted!</h3>
+                    <p>Ticket ID: <b style="color:var(--accent-primary);">${ticket}</b></p>
+                    <small>Visible in public directory post Admin Approval.</small>
                 </div>
             `;
             this.reset();
@@ -537,19 +642,19 @@
         function renderPublicLostFound() {
             const list = document.getElementById('lf-public-list');
             const approved = store.lostfound.filter(i => i.status === 'Approved');
-            if(!approved.length) { list.innerHTML = '<p style="color:#94a3b8;">No approved items currently listed.</p>'; return; }
+            if(!approved.length) { list.innerHTML = '<p style="color:var(--text-muted);">No approved listings available.</p>'; return; }
             list.innerHTML = approved.map(i => `
                 <div class="data-card">
                     <div>
-                        <h4>${i.type==='Lost'?'❌ LOST':'✅ FOUND'}: ${i.title} <small>(${i.cat})</small></h4>
-                        <p>${i.desc}</p>
-                        <small>Location: ${i.loc} | Contact: ${i.contact}</small>
+                        <h4>${i.type==='Lost'?'❌ LOST':'✅ FOUND'}: ${i.title} <small style="color:var(--text-muted);">(${i.cat})</small></h4>
+                        <p style="color:var(--text-muted); margin-top:4px;">${i.desc}</p>
+                        <small style="color:var(--text-muted);">Location: ${i.loc} | Contact: ${i.contact}</small>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Parent Attendance Check
+        // Parent Check
         function parentCheckAttendance() {
             const r = document.getElementById('parent-search-roll').value.trim();
             const res = document.getElementById('parent-search-result');
@@ -559,18 +664,18 @@
                     <div class="data-card" style="border-color:${st.status==='Present'?'var(--success)':'var(--danger)'};">
                         <div>
                             <h3>${st.name} (Roll: ${st.roll})</h3>
-                            <p>Branch: ${st.branch} | Class: ${st.class}</p>
-                            <p style="margin-top:8px;">Campus Status Today: <b style="color:${st.status==='Present'?'#34d399':'#f87171'};">${st.status==='Present'?'✅ Present (Inside Campus)':'❌ Absent (Outside Campus)'}</b></p>
-                            <p>Overall Attendance Percentage: <b style="color:var(--accent); font-size:1.2rem;">${st.pct}%</b></p>
+                            <p style="color:var(--text-muted);">Branch: ${st.branch} | Class: ${st.class}</p>
+                            <p style="margin-top:8px;">Campus Presence Today: <b style="color:${st.status==='Present'?'#34d399':'#f87171'};">${st.status==='Present'?'✅ Present (Inside Campus)':'❌ Absent (Outside Campus)'}</b></p>
+                            <p style="margin-top:4px;">Overall Attendance Rate: <b style="color:var(--accent-primary); font-size:1.2rem;">${st.pct}%</b></p>
                         </div>
                     </div>
                 `;
             } else {
-                res.innerHTML = `<p style="color:var(--danger);">No student record found for Roll No: ${r}</p>`;
+                res.innerHTML = `<p style="color:var(--danger);">No record found for Roll: ${r}</p>`;
             }
         }
 
-        // ADMIN TAB SWITCHES
+        // Admin Core
         function switchAdminSubTab(sub) {
             ['sos', 'grievance', 'outpass', 'lf', 'roster'].forEach(t => {
                 document.getElementById('adm-' + t + '-view').style.display = (t === sub) ? 'block' : 'none';
@@ -578,76 +683,70 @@
         }
         function switchAdminTabOutpass() { switchAdminSubTab('outpass'); }
 
-        // ADMIN DASHBOARD RENDER & DELETE ACTIONS
         function renderAdminDashboard() {
             document.getElementById('count-sos').innerText = store.sos.length;
 
-            // Render SOS
             document.getElementById('adm-sos-list').innerHTML = store.sos.length ? store.sos.map((s, idx) => `
-                <div class="data-card" style="border-color:var(--danger); background:rgba(239,68,68,0.1);">
+                <div class="data-card" style="border-color:var(--danger); background:rgba(244,63,94,0.08);">
                     <div>
-                        <h4>🚨 SOS ALERT (${s.ticket})</h4>
+                        <h4 style="color:var(--danger);"><i class="fa-solid fa-bell"></i> SOS ALERT (${s.ticket})</h4>
                         <p>Location: <b>${s.location}</b></p>
-                        <small>Time: ${s.time} | Date: ${s.date}</small>
+                        <small style="color:var(--text-muted);">Time: ${s.time} | Date: ${s.date}</small>
                     </div>
-                    <button class="btn btn-danger" onclick="deleteItem('sos', ${idx})">🗑️ Clear Alert</button>
+                    <button class="btn btn-danger" onclick="deleteItem('sos', ${idx})"><i class="fa-solid fa-trash"></i> Resolve</button>
                 </div>
-            `).join('') : '<p>No emergency alerts.</p>';
+            `).join('') : '<p style="color:var(--text-muted);">No emergency alerts.</p>';
 
-            // Render Grievances
             document.getElementById('adm-grievance-list').innerHTML = store.grievances.length ? store.grievances.map((g, idx) => `
                 <div class="data-card">
                     <div>
                         <h4>Ticket: ${g.ticket} (${g.cat})</h4>
-                        <p>${g.desc}</p>
-                        <small>Roll: ${g.roll} | Loc: ${g.location}</small>
+                        <p style="color:var(--text-muted);">${g.desc}</p>
+                        <small style="color:var(--text-muted);">Roll: ${g.roll} | Loc: ${g.location}</small>
                     </div>
-                    <div>
+                    <div style="display:flex; gap:8px;">
                         <button class="btn btn-success" onclick="updateStatus('grievances', ${idx}, 'Approved')">Approve</button>
-                        <button class="btn btn-danger" onclick="deleteItem('grievances', ${idx})">🗑️ Delete</button>
+                        <button class="btn btn-danger" onclick="deleteItem('grievances', ${idx})"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
-            `).join('') : '<p>No grievance submissions.</p>';
+            `).join('') : '<p style="color:var(--text-muted);">No grievances.</p>';
 
-            // Render Outpass
             document.getElementById('adm-outpass-list').innerHTML = store.outpass.length ? store.outpass.map((o, idx) => `
                 <div class="data-card">
                     <div>
                         <h4>Ticket: ${o.ticket} - ${o.name} (${o.roll})</h4>
-                        <p>Reason: ${o.reason} | Destination: ${o.dest}</p>
-                        <small>Out: ${o.out} | Return: ${o.in}</small>
+                        <p style="color:var(--text-muted);">Reason: ${o.reason} | Destination: ${o.dest}</p>
+                        <small style="color:var(--text-muted);">Out: ${o.out} | Return: ${o.in}</small>
                     </div>
-                    <div>
+                    <div style="display:flex; gap:8px;">
                         <button class="btn btn-success" onclick="updateStatus('outpass', ${idx}, 'Approved')">Approve</button>
-                        <button class="btn btn-danger" onclick="deleteItem('outpass', ${idx})">🗑️ Delete</button>
+                        <button class="btn btn-danger" onclick="deleteItem('outpass', ${idx})"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
-            `).join('') : '<p>No out-pass requests.</p>';
+            `).join('') : '<p style="color:var(--text-muted);">No out-passes.</p>';
 
-            // Render LF
             document.getElementById('adm-lf-list').innerHTML = store.lostfound.length ? store.lostfound.map((l, idx) => `
                 <div class="data-card">
                     <div>
                         <h4>${l.type}: ${l.title} (${l.ticket})</h4>
-                        <p>${l.desc}</p>
-                        <small>Loc: ${l.loc} | Contact: ${l.contact}</small>
+                        <p style="color:var(--text-muted);">${l.desc}</p>
+                        <small style="color:var(--text-muted);">Loc: ${l.loc} | Contact: ${l.contact}</small>
                     </div>
-                    <div>
-                        <button class="btn btn-success" onclick="updateStatus('lostfound', ${idx}, 'Approved')">Approve Display</button>
-                        <button class="btn btn-danger" onclick="deleteItem('lostfound', ${idx})">🗑️ Delete</button>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-success" onclick="updateStatus('lostfound', ${idx}, 'Approved')">Approve</button>
+                        <button class="btn btn-danger" onclick="deleteItem('lostfound', ${idx})"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
-            `).join('') : '<p>No lost & found reports.</p>';
+            `).join('') : '<p style="color:var(--text-muted);">No lost & found reports.</p>';
 
-            // Render Roster
             document.getElementById('adm-roster-list').innerHTML = store.students.map((st, idx) => `
                 <div class="data-card">
                     <div>
                         <h4>${st.name} (Roll: ${st.roll})</h4>
-                        <p>Branch: ${st.branch} | Class: ${st.class} | Attendance: ${st.pct}%</p>
+                        <p style="color:var(--text-muted);">Branch: ${st.branch} | Class: ${st.class} | Attendance: ${st.pct}%</p>
                         <small>Status: <b>${st.status}</b></small>
                     </div>
-                    <button class="btn btn-danger" onclick="deleteItem('students', ${idx})">🗑️ Delete</button>
+                    <button class="btn btn-danger" onclick="deleteItem('students', ${idx})"><i class="fa-solid fa-trash"></i> Delete</button>
                 </div>
             `).join('');
         }
@@ -656,7 +755,6 @@
             store[cat][idx].status = status;
             commitStore();
             renderAdminDashboard();
-            alert('Status updated to ' + status);
         }
 
         function deleteItem(cat, idx) {
@@ -679,10 +777,9 @@
             store.students.push({ name, roll, branch, class: cls, status, pct });
             commitStore();
             renderAdminDashboard();
-            alert('Student added to roster!');
+            alert('Student added!');
         }
 
-        // Init Load
         updateRatingsUI();
     </script>
 </body>
